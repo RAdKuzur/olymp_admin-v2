@@ -24,7 +24,7 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email адрес</label>
+                                <label for="email" class="form-label">Адрес электронной почты</label>
                                 <input type="email"
                                        class="form-control @error('email') is-invalid @enderror"
                                        id="email"
@@ -50,15 +50,6 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <div class="mb-3 form-check">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       id="remember"
-                                       name="remember" {{ old('remember') ? 'checked' : '' }}>
-                                <label class="form-check-label" for="remember">Запомнить меня</label>
-                            </div>
-
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">Войти</button>
                             </div>

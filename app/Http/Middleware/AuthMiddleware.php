@@ -17,7 +17,7 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Cookie::get('username')){
+        if (Cookie::get('username')){
             return $next($request);
         }
         else {

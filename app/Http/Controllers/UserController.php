@@ -6,9 +6,9 @@ use App\Components\Dictionaries\GenderDictionary;
 use App\Components\Dictionaries\RoleDictionary;
 use App\Components\RabbitMQHelper;
 use App\Http\Requests\UserRequest;
-use app\repositories\UserRepository;
-use app\services\RabbitMQService;
-use app\services\UserService;
+use App\Repositories\UserRepository;
+use App\Services\RabbitMQService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller

@@ -28,6 +28,12 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('school.index') }}">Обр. учреждения</a></li>
                 </ul>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('user.index') }}">Пользователи</a></li>
+                </ul>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('participant.index') }}">Участники</a></li>
+                </ul>
                 @if (!Cookie::get('username'))
                 <div class="d-flex">
                     <a class="btn btn-link text-decoration-none" href="{{ route('login') }}">Login</a>

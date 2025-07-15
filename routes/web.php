@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
@@ -38,5 +39,11 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::delete('/user/delete/{id}', [UserController::class, 'delete'])->name('user.delete');
     Route::get('/user/show/{id}', [UserController::class, 'show'])->name('user.show');
 
-
+    Route::get('/participant/index', [ParticipantController::class, 'index'])->name('participant.index');
+    Route::get('/participant/create', [ParticipantController::class, 'create'])->name('participant.create');
+    Route::post('/participant/store', [ParticipantController::class, 'store'])->name('participant.store');
+    Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');
+    Route::post('/participant/update/{id}', [ParticipantController::class, 'update'])->name('participant.update');
+    Route::delete('/participant/delete/{id}', [ParticipantController::class, 'delete'])->name('participant.delete');
+    Route::get('/participant/show/{id}', [ParticipantController::class, 'show'])->name('participant.show');
 });
