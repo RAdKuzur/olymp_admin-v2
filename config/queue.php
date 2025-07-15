@@ -71,6 +71,14 @@ return [
             'after_commit' => false,
         ],
 
+        'rabbitmq' => [
+            'driver' => 'rabbitmq',
+            'host' => env('RABBITMQ_HOST', '172.16.0.94'),
+            'port' => env('RABBITMQ_PORT', 5672),
+            'user' => env('RABBITMQ_USER', 'test'),
+            'password' => env('RABBITMQ_PASSWORD', 'test'),
+            'vhost' => env('RABBITMQ_VHOST', '/'),
+        ],
     ],
 
     /*

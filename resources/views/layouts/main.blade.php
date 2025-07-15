@@ -7,7 +7,7 @@
     <meta name="keywords" content="{{ $meta_keywords ?? '' }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <title>{{ $title ?? config('app.name') }}</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     @stack('head')
 </head>
 
@@ -24,6 +24,9 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('homepage') }}">Главная</a></li>
+                </ul>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('school.index') }}">Обр. учреждения</a></li>
                 </ul>
                 @if (!Cookie::get('username'))
                 <div class="d-flex">
