@@ -12,5 +12,5 @@ class School extends Model
     public $id;
     public $name;
     public $region;
-
+    protected $fillable = ['name', 'region'];
 }

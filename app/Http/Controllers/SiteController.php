@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\ApiHelper;
 use App\Http\Requests\LoginRequest;
 use App\Services\ApiService;
 
@@ -28,7 +29,7 @@ class SiteController extends Controller
     }
     public function auth(LoginRequest $request){
         $data = $request->validated();
-        $response = $this->apiService->post('http://172.16.1.39:8181/api/users/login', $data);
+        $response = $this->apiService->post(ApiHelper::AUTH_URL_API, $data);
         if ($response['success']) {
             $token = $response['data']['data']['access_token'];
             Cookie::queue('username', json_encode([
