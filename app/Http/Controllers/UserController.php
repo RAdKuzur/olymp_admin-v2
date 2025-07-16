@@ -40,6 +40,7 @@ class UserController extends Controller
         return view('user/create', compact('roles', 'genders'));
     }
     public function store(UserRequest $request){
+
         $data = $request->validated();
         $this->rabbitMQService->publish(
             [RabbitMQHelper::AUTH_QUEUE_NAME],
@@ -53,6 +54,7 @@ class UserController extends Controller
     public function show($id){
         $modelJson = $this->userRepository->getByApiId($id);
         $model = $this->userService->transformModel($modelJson);
+
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
         return view('user/show', compact('model', 'roles', 'genders'));

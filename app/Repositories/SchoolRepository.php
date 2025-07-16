@@ -20,8 +20,11 @@ class SchoolRepository
     public function getByApiAll($page = 1, $limit = 10)
     {
         return $this->apiService->get(
-            ApiHelper::SCHOOL_URL_API . '?page=' . $page . '&limit=' . $limit,
-            [],
+            ApiHelper::SCHOOL_URL_API,
+            [
+                'page' => $page,
+                'limit' => $limit
+            ],
             [
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]

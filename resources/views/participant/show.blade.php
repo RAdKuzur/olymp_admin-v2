@@ -10,7 +10,7 @@
         <p>
             <a href="{{ route('participant.edit', $participant->id) }}" class="btn btn-primary">Редактировать</a>
 
-        <form action="{{ route('participant.destroy', $participant->id) }}" method="POST" style="display:inline;">
+        <form action="{{ route('participant.delete', $participant->id) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого участника?')">

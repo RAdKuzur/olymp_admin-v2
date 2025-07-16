@@ -39,7 +39,7 @@ class SiteController extends Controller
             return redirect('/');
         }
         else {
-            return view('site/login')->withErrors($response['errors']);
+            return view('site/login');
         }
     }
     public function logout(){

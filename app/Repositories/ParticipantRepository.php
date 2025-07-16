@@ -15,8 +15,11 @@ class ParticipantRepository
     public function getByApiAll($page = 1, $limit = 10)
     {
         return $this->apiService->get(
-            ApiHelper::PARTICIPANT_URL_API . '?page=' . $page . '&limit=' . $limit,
-            [],
+            ApiHelper::PARTICIPANT_URL_API,
+            [
+                'page' => $page,
+                'limit' => $limit
+            ],
             [
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
@@ -41,6 +44,6 @@ class ParticipantRepository
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
         );
-        return json_decode($response['content'])->data;
+        return $response['data']['data'];
     }
 }

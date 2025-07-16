@@ -12,7 +12,7 @@
         <h1>Просмотр пользователя {{ $model->getFullFio() }}</h1>
 
         <p>
-            <a href="{{ route('user.update', $model->id) }}" class="btn btn-primary">Редактировать</a>
+            <a href="{{ route('user.edit', $model->id) }}" class="btn btn-primary">Редактировать</a>
         <form action="{{ route('user.delete', $model->id) }}" method="POST" style="display: inline-block;">
             @csrf
             @method('DELETE')

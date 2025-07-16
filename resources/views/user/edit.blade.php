@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Редактирование пользователя ' . $user->getFullFio())
 
@@ -13,7 +13,6 @@
 
         <form id="dynamic-form" method="POST" action="{{ route('user.update', $user->id) }}">
             @csrf
-            @method('PUT')
 
             <div class="form-group">
                 <label for="email">Email (логин)</label>
@@ -48,9 +47,7 @@
             <div class="form-group">
                 <label for="phone_number">Телефон</label>
                 <input type="tel" class="form-control" id="phone_number" name="phone_number"
-                       value="{{ old('phone_number', $user->phone_number) }}"
-                       pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
-                       placeholder="+7 (999) 999-99-99">
+                       value="{{ old('phone_number', $user->phone_number) }}">
                 @error('phone_number')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
@@ -85,12 +82,4 @@
             <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
     </div>
-
-    <script>
-        // Маска для телефона
-        document.getElementById('phone_number').addEventListener('input', function(e) {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-            e.target.value = '+7' + (x[2] ? ' (' + x[2] : '') + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
-        });
-    </script>
 @endsection

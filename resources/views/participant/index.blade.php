@@ -4,10 +4,9 @@
 
 @section('content')
     <div class="participant-index">
-        <h1>{{ $title }}</h1>
         <p>Список участников деятельности</p>
 
-        <a href="{{ route('participants.create') }}" class="btn btn-success">Добавить участника деятельности</a>
+        <a href="{{ route('participant.create') }}" class="btn btn-success">Добавить участника деятельности</a>
 
         <table class="table table-bordered table-striped mt-3">
             <thead>
@@ -24,7 +23,7 @@
             <tbody>
             @foreach($participants as $index => $participant)
                 <tr>
-                    <td>{{ $index }}</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $participant->userAPI->getFullFio() }}</td>
                     <td>{{ $countries[$participant->citizenship] ?? '—' }}</td>
                     <td>{{ $disabilities[$participant->disability] ?? '—' }}</td>
@@ -46,8 +45,8 @@
 
         <div class="pagination">
             @for ($i = 1; $i <= ceil($participantsAmount / 10); $i++)
-                <a href="{{ route('participants.index', ['page' => $i]) }}">{{ $i }}</a>
+                <a href="{{ route('participant.index', ['page' => $i]) }}">{{ $i }}</a>
             @endfor
         </div>
     </div>
-@endsection<?php
+@endsection

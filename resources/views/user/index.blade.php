@@ -8,7 +8,6 @@
 
 @section('content')
     <div class="user-index">
-        <h1>{{ $title }}</h1>
         <p>Список пользователей</p>
 
         <a href="{{ route('user.create') }}" class="btn btn-success">Добавить пользователя</a>
@@ -31,8 +30,8 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->phone_number }}</td>
                     <td>
-                        <a href="{{ route('user.view', $user->id) }}" class="btn btn-sm btn-primary">Просмотр</a>
-                        <a href="{{ route('user.update', $user->id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                        <a href="{{ route('user.show', $user->id) }}" class="btn btn-sm btn-primary">Просмотр</a>
+                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-warning">Редактировать</a>
                         <form action="{{ route('user.delete', $user->id) }}" method="POST" style="display: inline-block;">
                             @csrf
                             @method('DELETE')

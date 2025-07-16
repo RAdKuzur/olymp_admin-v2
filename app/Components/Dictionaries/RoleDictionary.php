@@ -4,9 +4,9 @@ namespace App\Components\Dictionaries;
 
 class RoleDictionary
 {
-    public const ADMIN = 0;
-    public const JURY = 1;
-    public const PARTICIPANT = 2;
+    public const ADMIN = 1;
+    public const JURY = 2;
+    public const PARTICIPANT = 3;
     public static function getList(){
         return [
             self::ADMIN => 'Администратор',

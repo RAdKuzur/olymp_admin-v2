@@ -13,7 +13,7 @@ class ParticipantRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,20 @@ class ParticipantRequest extends FormRequest
     public function rules()
     {
         return [
+            'email' => 'required|email|max:255',
+            'firstname' => 'required|string|max:100',
+            'password' => 'nullable|string',
+            'surname' => 'required|string|max:100',
+            'patronymic' => 'nullable|string|max:100',
+            'phone_number' => 'required|string',
+            'gender' => 'required',
+            'role' => 'required',
+            'birthdate' => 'required|date|before_or_equal:today',
 
+            'disability' => 'required',
+            'citizenship' => 'required',
+            'school_id' => 'required',
+            'class_number' => 'required'
         ];
     }
 }

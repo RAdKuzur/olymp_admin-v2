@@ -23,7 +23,7 @@ Route::post('/login', [SiteController::class, 'auth'])->name('auth');
 Route::post('/logout', [SiteController::class, 'logout'])->name('logout');
 Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/', [SiteController::class, 'index'])->name('homepage');
-    Route::get('/school/index', [SchoolController::class, 'index'])->name('school.index');
+    Route::get('/school/index/{page?}', [SchoolController::class, 'index'])->name('school.index');
     Route::get('/school/create', [SchoolController::class, 'create'])->name('school.create');
     Route::post('/school/store', [SchoolController::class, 'store'])->name('school.store');
     Route::get('/school/edit/{id}', [SchoolController::class, 'edit'])->name('school.edit');
@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::delete('/school/delete/{id}', [SchoolController::class, 'delete'])->name('school.delete');
     Route::get('/school/show/{id}', [SchoolController::class, 'show'])->name('school.show');
 
-    Route::get('/user/index', [UserController::class, 'index'])->name('user.index');
+    Route::get('/user/index/{page?}', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
     Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::delete('/user/delete/{id}', [UserController::class, 'delete'])->name('user.delete');
     Route::get('/user/show/{id}', [UserController::class, 'show'])->name('user.show');
 
-    Route::get('/participant/index', [ParticipantController::class, 'index'])->name('participant.index');
+    Route::get('/participant/index/{page?}', [ParticipantController::class, 'index'])->name('participant.index');
     Route::get('/participant/create', [ParticipantController::class, 'create'])->name('participant.create');
     Route::post('/participant/store', [ParticipantController::class, 'store'])->name('participant.store');
     Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');

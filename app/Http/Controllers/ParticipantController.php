@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Components\Dictionaries\ClassDictionary;
 use App\Components\Dictionaries\CountryDictionary;
 use App\Components\Dictionaries\DisabilityDictionary;
+use App\Components\Dictionaries\GenderDictionary;
+use App\Components\Dictionaries\RoleDictionary;
 use App\Components\RabbitMQHelper;
 use App\Http\Requests\ParticipantRequest;
 use App\Repositories\ParticipantRepository;
@@ -56,11 +58,15 @@ class ParticipantController extends Controller
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
         $schools = $this->schoolService->transform($this->schoolRepository->getByApiAll());
+        $roles = RoleDictionary::getList();
+        $genders = GenderDictionary::getList();
         return view('participant/create', [
             'disabilities' => $disabilities,
             'countries' => $countries,
             'classes' => $classes,
-            'schools' => $schools
+            'schools' => $schools,
+            'roles' => $roles,
+            'genders' => $genders
         ]);
 
     }
@@ -80,27 +86,31 @@ class ParticipantController extends Controller
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
         $modelJson = $this->participantRepository->getByApiId($id);
-        $model = $this->participantService->transformModel($modelJson);
+        $participant = $this->participantService->transformModel($modelJson);
         return view('participant/show', [
             'disabilities' => $disabilities,
             'countries' => $countries,
             'classes' => $classes,
-            'model' => $model
+            'participant' => $participant
         ]);
     }
     public function edit($id){
         $disabilities = DisabilityDictionary::getList();
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
+        $roles = RoleDictionary::getList();
+        $genders = GenderDictionary::getList();
         $schools = $this->schoolService->transform($this->schoolRepository->getByApiAll());
         $modelJson = $this->participantRepository->getByApiId($id);
-        $model = $this->participantService->transformModel($modelJson);
+        $participant = $this->participantService->transformModel($modelJson);
         return view('participant/edit', [
             'disabilities' => $disabilities,
             'countries' => $countries,
             'classes' => $classes,
-            'model' => $model,
-            'schools' => $schools
+            'participant' => $participant,
+            'schools' => $schools,
+            'roles' => $roles,
+            'genders' => $genders
         ]);
     }
     public function update(ParticipantRequest $request, $id){

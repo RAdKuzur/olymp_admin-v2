@@ -47,8 +47,7 @@
             <div class="form-group">
                 <label for="phone_number">Телефон</label>
                 <input type="tel" class="form-control" id="phone_number" name="phone_number"
-                       pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
-                       placeholder="+7 (999) 999-99-99">
+                       placeholder="+7 999 999-99-99">
                 @error('phone_number')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
 
@@ -82,12 +81,4 @@
             <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
     </div>
-
-    <script>
-        // Маска для телефона
-        document.getElementById('phone_number').addEventListener('input', function(e) {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-            e.target.value = '+7' + (x[2] ? ' (' + x[2] : '') + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
-        });
-    </script>
 @endsection
