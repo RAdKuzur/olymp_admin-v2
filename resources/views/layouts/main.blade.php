@@ -24,30 +24,23 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('homepage') }}">Главная</a></li>
-                </ul>
-                <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('application.index') }}">Заявки</a></li>
-                </ul>
-                <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('school.index') }}">Обр. учреждения</a></li>
-                </ul>
-                <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('user.index') }}">Пользователи</a></li>
-                </ul>
-                <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('participant.index') }}">Участники</a></li>
                 </ul>
+
                 @if (!Cookie::get('username'))
-                <div class="d-flex">
-                    <a class="btn btn-link text-decoration-none" href="{{ route('login') }}">Login</a>
-                </div>
+                    <div class="d-flex">
+                        <a class="btn btn-link text-decoration-none" href="{{ route('login') }}">Login</a>
+                    </div>
                 @else
-                <form method="POST" action="{{ route('logout') }}" class="d-flex">
-                    @csrf
-                    <button type="submit" class="btn btn-link text-decoration-none">
-                        Logout ({{ json_decode(Cookie::get('username'))->email }})
-                    </button>
-                </form>
+                    <form method="POST" action="{{ route('logout') }}" class="d-flex">
+                        @csrf
+                        <button type="submit" class="btn btn-link text-decoration-none">
+                            Logout ({{ json_decode(Cookie::get('username'))->email }})
+                        </button>
+                    </form>
                 @endif
             </div>
         </div>
