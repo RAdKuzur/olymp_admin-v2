@@ -15,4 +15,5 @@ class RabbitMQHelper
     public const USER_TABLE = 'user';
     public const PARTICIPANT_TABLE = 'participant';
     public const SCHOOL_TABLE = 'school';
+    public const APPLICATION_TABLE = 'application';
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SiteController;
@@ -46,4 +47,13 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::post('/participant/update/{id}', [ParticipantController::class, 'update'])->name('participant.update');
     Route::delete('/participant/delete/{id}', [ParticipantController::class, 'delete'])->name('participant.delete');
     Route::get('/participant/show/{id}', [ParticipantController::class, 'show'])->name('participant.show');
+
+    Route::get('/application/index/{page?}', [ApplicationController::class, 'index'])->name('application.index');
+    Route::get('/application/create', [ApplicationController::class, 'create'])->name('application.create');
+    Route::post('/application/store', [ApplicationController::class, 'store'])->name('application.store');
+    Route::get('/application/edit/{id}', [ApplicationController::class, 'edit'])->name('application.edit');
+    Route::post('/application/update/{id}', [ApplicationController::class, 'update'])->name('application.update');
+    Route::delete('/application/delete/{id}', [ApplicationController::class, 'delete'])->name('application.delete');
+    Route::get('/application/show/{id}', [ApplicationController::class, 'show'])->name('application.show');
+    Route::post('/application/confirm/{id}', [ApplicationController::class, 'confirm'])->name('application.confirm');
 });

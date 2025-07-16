@@ -26,6 +26,9 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('homepage') }}">Главная</a></li>
                 </ul>
                 <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('application.index') }}">Заявки</a></li>
+                </ul>
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('school.index') }}">Обр. учреждения</a></li>
                 </ul>
                 <ul class="navbar-nav me-auto">
