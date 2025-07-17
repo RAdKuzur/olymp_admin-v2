@@ -28,6 +28,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('school.index') }}">Обр. учреждения</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('user.index') }}">Пользователи</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('participant.index') }}">Участники</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('event.index') }}">Олимпиады</a></li>
                 </ul>
 
                 @if (!Cookie::get('username'))

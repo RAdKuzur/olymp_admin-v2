@@ -28,7 +28,7 @@ class EventRepository
     public function getByApiId($id)
     {
         return $this->apiService->get(
-            ApiHelper::EVENT_URL_API . '/' . $id,
+            ApiHelper::EVENT_MODEL_URL_API . '/' . $id,
             [],
             [
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
@@ -38,12 +38,12 @@ class EventRepository
     public function getCount()
     {
         $response = $this->apiService->get(
-            ApiHelper::EVENT_COUNT_URL_API,
+            ApiHelper::EVENT_URL_API,
             [],
             [
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
         );
-        return $response['data']['data'];
+        return $response['data']['data']['totalCount'];
     }
 }

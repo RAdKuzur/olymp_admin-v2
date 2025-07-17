@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SiteController;
@@ -56,4 +57,12 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::delete('/application/delete/{id}', [ApplicationController::class, 'delete'])->name('application.delete');
     Route::get('/application/show/{id}', [ApplicationController::class, 'show'])->name('application.show');
     Route::post('/application/confirm/{id}', [ApplicationController::class, 'confirm'])->name('application.confirm');
+
+    Route::get('/event/index/{page?}', [EventController::class, 'index'])->name('event.index');
+    Route::get('/event/show/{id}', [EventController::class, 'show'])->name('event.show');
+    Route::delete('/event/delete/{id}', [EventController::class, 'delete'])->name('event.delete');
+
+    Route::get('/event/task/{id}', [EventController::class, 'task'])->name('event.task');
+    Route::get('/event/attendance/{id}', [EventController::class, 'attendance'])->name('event.attendance');
+    Route::get('/event/point/{id}', [EventController::class, 'point'])->name('event.point');
 });

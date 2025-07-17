@@ -25,6 +25,10 @@ class ApplicationRepository
             ]
         );
     }
+    public function getConfirmedApplications($id, $page = 1, $limit = 10)
+    {
+        return [];
+    }
     public function getByApiId($id)
     {
         return $this->apiService->get(
