@@ -15,4 +15,7 @@ class Attendance extends Model
     public $id;
     public $application_id;
     public $status;
+    public function changeStatus($status){
+        $this->status = $status;
+    }
 }

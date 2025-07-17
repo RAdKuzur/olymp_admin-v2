@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Dictionaries\AttendanceDictionary;
 use App\Repositories\ApplicationRepository;
+use App\Repositories\AttendanceRepository;
 use App\Repositories\EventRepository;
 use App\Services\ApplicationService;
 use App\Services\EventService;
@@ -17,12 +18,14 @@ class EventController extends Controller
     private EventRepository $eventRepository;
     private ApplicationRepository $applicationRepository;
     private ApplicationService $applicationService;
+    private AttendanceRepository $attendanceRepository;
     public function __construct(
         RabbitMQService $rabbitMQService,
         EventService $eventService,
         EventRepository $eventRepository,
         ApplicationRepository $applicationRepository,
-        ApplicationService $applicationService
+        ApplicationService $applicationService,
+        AttendanceRepository $attendanceRepository
     )
     {
         $this->rabbitMQService = $rabbitMQService;
@@ -30,6 +33,7 @@ class EventController extends Controller
         $this->eventRepository = $eventRepository;
         $this->applicationRepository = $applicationRepository;
         $this->applicationService = $applicationService;
+        $this->attendanceRepository = $attendanceRepository;
     }
 
     public function index($page = 1){
@@ -56,7 +60,8 @@ class EventController extends Controller
         $applicationsJson = $this->applicationRepository->getConfirmedApplications($id);
         $applications = $this->applicationService->transform($applicationsJson);
         $attendanceStatuses = AttendanceDictionary::getList();
-        return view('event/attendance', compact('applications', 'event' , 'attendanceStatuses'));
+        $attendances = $this->attendanceRepository->getAll();
+        return view('event/attendance', compact('applications', 'event' , 'attendanceStatuses', 'attendances'));
     }
     public function point($id)
     {
