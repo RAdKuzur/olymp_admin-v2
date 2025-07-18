@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
@@ -67,4 +68,7 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/event/point/{id}', [EventController::class, 'point'])->name('event.point');
     Route::get('/event/synchronize/{id}', [EventController::class, 'synchronize'])->name('event.synchronize');
     Route::post('/event/add-task/{id}', [EventController::class, 'addTask'])->name('event.add-task');
+
+    Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
+    Route::post('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');
 });
