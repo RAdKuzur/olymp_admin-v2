@@ -44,6 +44,9 @@
                     <a href="{{ route('event.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Назад к списку
                     </a>
+                    <a href="{{ route('event.synchronize', $event->id) }}" class="btn btn-success">
+                        <i class="fas fa-arrow-left"></i> Синхронизировать
+                    </a>
                     <a href="{{ route('event.attendance', $event->id) }}" class="btn btn-primary">
                         <i class="fas fa-arrow-left"></i> Перейти к явкам
                     </a>

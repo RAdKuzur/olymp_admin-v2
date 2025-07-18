@@ -18,4 +18,8 @@ class Attendance extends Model
     public function changeStatus($status){
         $this->status = $status;
     }
+    public function taskAttendances()
+    {
+        return $this->hasMany(TaskAttendance::class);
+    }
 }

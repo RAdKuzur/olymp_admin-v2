@@ -65,4 +65,6 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/event/task/{id}', [EventController::class, 'task'])->name('event.task');
     Route::get('/event/attendance/{id}', [EventController::class, 'attendance'])->name('event.attendance');
     Route::get('/event/point/{id}', [EventController::class, 'point'])->name('event.point');
+    Route::get('/event/synchronize/{id}', [EventController::class, 'synchronize'])->name('event.synchronize');
+    Route::post('/event/add-task/{id}', [EventController::class, 'addTask'])->name('event.add-task');
 });

@@ -6,6 +6,14 @@ use App\Models\TaskAttendance;
 
 class TaskAttendanceRepository
 {
+    private TaskRepository $taskRepository;
+    public function __construct(
+        TaskRepository $taskRepository
+    )
+    {
+        $this->taskRepository = $taskRepository;
+    }
+
     public function get($id){
         return TaskAttendance::find($id);
     }
@@ -18,6 +26,11 @@ class TaskAttendanceRepository
     public function getByAttendanceId($attendanceId)
     {
         return TaskAttendance::where(['attendance_id' => $attendanceId])->get();
+    }
+    public function getByEventId($eventId){
+        $tasks = $this->taskRepository->getByEventId($eventId);
+        $taskAttendances = TaskAttendance::where(['task_id' => array_column($tasks->toArray(), 'id')])->get();
+        return $taskAttendances;
     }
     public function save(TaskAttendance $taskAttendance){
         return $taskAttendance->save();

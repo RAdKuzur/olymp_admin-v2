@@ -29,6 +29,10 @@ class ApplicationRepository
     {
         return [];
     }
+    public function getByEventId($id)
+    {
+        return [];
+    }
     public function getByApiId($id)
     {
         return $this->apiService->get(
