@@ -70,5 +70,5 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::post('/event/add-task/{id}', [EventController::class, 'addTask'])->name('event.add-task');
 
     Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
-    Route::post('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');
+    Route::get('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');
 });
