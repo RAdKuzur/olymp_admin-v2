@@ -31,7 +31,13 @@ class ApplicationRepository
     }
     public function getByEventId($id)
     {
-        return [];
+        return $this->apiService->get(
+            ApiHelper::APPLICATION_EVENT_URL_API . '/' . $id,
+            [],
+            [
+                'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
+            ]
+        );
     }
     public function getByApiId($id)
     {

@@ -2,11 +2,21 @@
 
 namespace App\Services;
 
+use App\Models\Application;
 use App\Models\Event;
+use App\Repositories\AttendanceRepository;
 use DateTime;
 
 class EventService
 {
+    public AttendanceRepository $attendanceRepository;
+    public function __construct(
+        AttendanceRepository $attendanceRepository
+    )
+    {
+        $this->attendanceRepository = $attendanceRepository;
+    }
+
     public function transform($data)
     {
         $models = [];
@@ -47,4 +57,22 @@ class EventService
         $event->events = $item['events'];
         return $event;
     }
+    public function synchronize($applications, $eventId){
+        $currentAttendances = $this->attendanceRepository->getAttendancesByEventId($eventId);
+        foreach ($applications as $application){
+            //создание явок
+            if (count($this->attendanceRepository->getByApplicationId($application->id)) == 0){
+                $this->attendanceRepository->create($application->id);
+            }
+        }
+        foreach ($currentAttendances as $attendance){
+            if(!array_key_exists($attendance->application_id, $applications)){
+                $this->attendanceRepository->delete($attendance);
+            }
+        }
+
+
+    }
+
+
 }

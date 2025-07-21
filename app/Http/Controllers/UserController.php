@@ -54,7 +54,6 @@ class UserController extends Controller
     public function show($id){
         $modelJson = $this->userRepository->getByApiId($id);
         $model = $this->userService->transformModel($modelJson);
-
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
         return view('user/show', compact('model', 'roles', 'genders'));

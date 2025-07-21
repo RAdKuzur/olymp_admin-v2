@@ -33,9 +33,19 @@ class AttendanceRepository
     {
         return Attendance::where(['status' => AttendanceDictionary::ATTENDANCE])->get();
     }
+    public function getByApplicationId($applicationId)
+    {
+        return Attendance::where(['application_id' => $applicationId])->get();
+    }
     public function getAttendancesByEventId($id)
     {
         $applications = $this->applicationRepository->getByEventId($id);
         return Attendance::where(['status' => AttendanceDictionary::ATTENDANCE])->where(['application_id' => array_column($applications, 'id')])->get();
+    }
+    public function create($applicationId){
+        Attendance::create([
+            'application_id' => $applicationId,
+            'status' => AttendanceDictionary::NO_ATTENDANCE,
+        ]);
     }
 }

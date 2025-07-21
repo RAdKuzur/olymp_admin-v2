@@ -13,7 +13,7 @@
                         <h5 class="card-title">Основная информация</h5>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <strong>Предмет:</strong> {{ $event->subject }}
+                                <strong>Предмет:</strong> {{ $subjects[$event->subject] }}
                             </li>
                             <li class="list-group-item">
                                 <strong>Дата начала:</strong> {{ \Carbon\Carbon::parse($event->start_date)->format('d.m.Y H:i') }}

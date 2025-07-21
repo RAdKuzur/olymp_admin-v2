@@ -10,7 +10,6 @@
 @section('content')
     <div class="application-index">
         <p>Список заявок</p>
-        <a href="{{ route('application.create') }}" class="btn btn-success">Добавить новую заявку</a>
         <table class="table">
             <thead>
             <tr>
@@ -19,6 +18,7 @@
                 <th>ФИО участника</th>
                 <th>Предмет</th>
                 <th>Статус заявки</th>
+                <th>Изменения статуса заявки</th>
                 <th>Действия</th>
             </tr>
             </thead>
@@ -30,6 +30,18 @@
                     <td>{{ $application->userAPI->getFullFio() }}</td>
                     <td>{{ $application->eventAPI->name }}</td>
                     <td>{{ $statuses[$application->status] }}</td>
+                    <td>
+                        @if($application->status == \App\Components\Dictionaries\ApplicationStatusDictionary::AWAITING)
+                            <form action="{{ route('application.confirm', $application->id) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-success">Подтвердить заявку</button>
+                            </form>
+                            <form action="{{ route('application.reject', $application->id) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-danger">Отклонить заявку</button>
+                            </form>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('application.show', $application->id) }}" class="btn btn-sm btn-primary">Просмотр</a>
                         <a href="{{ route('application.edit', $application->id) }}" class="btn btn-sm btn-warning">Редактировать</a>

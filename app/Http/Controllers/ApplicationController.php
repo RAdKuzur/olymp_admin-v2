@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Components\Dictionaries\ApplicationStatusDictionary;
+use App\Components\Dictionaries\ReasonParticipantDictionary;
+use App\Components\Dictionaries\SubjectDictionary;
 use App\Components\RabbitMQHelper;
 use App\Http\Requests\ApplicationRequest;
 use App\Repositories\ApplicationRepository;
@@ -74,9 +76,11 @@ class ApplicationController extends Controller
         $applicationJson = $this->applicationRepository->getByApiId($id);
         $application = $this->applicationService->transformModel($applicationJson);
         $statuses = ApplicationStatusDictionary::getList();
-        $users = $this->userService->transform($this->userRepository->getByApiId($id));
+        $users = $this->userService->transform($this->userRepository->getByApiAll());
+        $subjects = SubjectDictionary::getList();
+        $reasons = ReasonParticipantDictionary::getList();
         $events = $this->eventService->transform($this->eventRepository->getByApiAll());
-        return view('application.edit')->with(compact('application', 'users', 'statuses', 'events'));
+        return view('application.edit')->with(compact('application', 'users', 'statuses', 'events', 'reasons', 'subjects'));
     }
     public function update(ApplicationRequest $request, $id){
         $data = $request->validated();
@@ -107,7 +111,18 @@ class ApplicationController extends Controller
             RabbitMQHelper::QUEUE_NAME,
             RabbitMQHelper::UPDATE,
             RabbitMQHelper::APPLICATION_TABLE,
-            ['status' => 'CHANGE'],
+            ['status' => ApplicationStatusDictionary::APPROVED],
+            ['id' => $id]
+        );
+        return redirect()->route('application.index');
+    }
+    public function reject($id){
+        $this->rabbitMQService->publish(
+            [RabbitMQHelper::APPLICATION_QUEUE_NAME],
+            RabbitMQHelper::QUEUE_NAME,
+            RabbitMQHelper::UPDATE,
+            RabbitMQHelper::APPLICATION_TABLE,
+            ['status' => ApplicationStatusDictionary::REJECTED],
             ['id' => $id]
         );
         return redirect()->route('application.index');

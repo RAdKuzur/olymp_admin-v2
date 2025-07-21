@@ -14,8 +14,10 @@ class Application extends Model
     public $user_id;
     public $event_id;
     public $status;
+    public $code;
+    public $reason;
     protected $fillable = [
-        'user_id', 'event_id', 'status'
+        'user_id', 'event_id', 'status', 'code', 'reason'
     ];
     protected $table = 'application';
 }

@@ -10,11 +10,11 @@ class Attendance extends Model
     use HasFactory;
     protected $table = 'attendance';
     protected $fillable = [
-        'application_id', 'status'
+        'id', 'application_id', 'status'
     ];
-    public $id;
+    /*public $id;
     public $application_id;
-    public $status;
+    public $status;*/
     public function changeStatus($status){
         $this->status = $status;
     }

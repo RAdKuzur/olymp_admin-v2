@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Dictionaries\SubjectDictionary;
+use App\Components\ExcelCreator;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -12,8 +13,7 @@ class ReportController extends Controller
         return view('report.index', compact('subjects'));
     }
     public function download($id){
-
-        return redirect()->route('report.index');
+        return ExcelCreator::createList('templates/MATH.xlsx');
     }
 
 }

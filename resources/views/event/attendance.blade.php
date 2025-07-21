@@ -13,14 +13,14 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($attendances as $index => $attendance)
+        @foreach($data as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ 'FIO' }}</td>
+                <td>{{ $item['person']->getFullFio() }}</td>
                 <td>
-                    <select name="status-{{$attendance->id}}" id="status-{{$attendance->id}}" class="form-control">
+                    <select name="status-{{$item['attendance']->id}}" id="status-{{$item['attendance']->id}}" class="form-control">
                         @foreach($attendanceStatuses as $key => $status)
-                            <option value="{{ $key }}">{{ $status }}</option>
+                            <option value="{{ $key }}"  @if($item['attendance']->status == $key) selected @endif>{{ $status }}</option>
                         @endforeach
                     </select>
                 </td>
@@ -28,4 +28,31 @@
         @endforeach
         </tbody>
     </table>
+    <script>
+        $(document).ready(function() {
+            // Обработчик изменения select
+            $('select[id^="status-"]').change(function() {
+                // Получаем ID из атрибута id (status-123 => 123)
+                var attendanceId = this.id.split('-')[1];
+                var newStatus = $(this).val();
+
+                // CSRF токен для защиты Laravel
+                var token = $('meta[name="csrf-token"]').attr('content');
+
+                // Отправка AJAX запроса
+                $.ajax({
+                    url: '/event/change-attendance' , // Укажите ваш URL
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        _token: token,
+                        attendance_id: attendanceId,
+                        status: newStatus
+                    },
+                });
+            });
+        });
+    </script>
 @endsection

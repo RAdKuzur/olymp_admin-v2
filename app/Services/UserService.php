@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Models\User;
 use DateTime;
+use function Illuminate\Events\queueable;
 
 class UserService
 {
     public function transform($data)
     {
         $models = [];
-
         foreach ($data['data']['data'] as $item) {
             $model = new User();
             $model->id = $item['id'];

@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::delete('/application/delete/{id}', [ApplicationController::class, 'delete'])->name('application.delete');
     Route::get('/application/show/{id}', [ApplicationController::class, 'show'])->name('application.show');
     Route::post('/application/confirm/{id}', [ApplicationController::class, 'confirm'])->name('application.confirm');
+    Route::post('/application/reject/{id}', [ApplicationController::class, 'reject'])->name('application.reject');
 
     Route::get('/event/index/{page?}', [EventController::class, 'index'])->name('event.index');
     Route::get('/event/show/{id}', [EventController::class, 'show'])->name('event.show');
@@ -68,6 +69,7 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/event/point/{id}', [EventController::class, 'point'])->name('event.point');
     Route::get('/event/synchronize/{id}', [EventController::class, 'synchronize'])->name('event.synchronize');
     Route::post('/event/add-task/{id}', [EventController::class, 'addTask'])->name('event.add-task');
+    Route::post('/event/change-attendance', [EventController::class, 'changeAttendance'])->name('event.change-attendance');
 
     Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');

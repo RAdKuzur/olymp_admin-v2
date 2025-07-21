@@ -13,7 +13,7 @@ class ExcelCreator
     public const RUSSIAN = [
         'filepath' => '',
         'lists' => [
-            'auditoriumList' => [],
+            'auditoriumList' => '9 классы',
             'appearanceList' => [],
             'pointLists' => [],
             'ratingList' => [],
@@ -22,9 +22,9 @@ class ExcelCreator
             'formESUList' => []
         ]
     ];
-    public function createList($filepath)
+    public static function createList($filepath)
     {
-        $templatePath = self::RUSSIAN['filepath'];
+        $templatePath = resource_path($filepath);
         if (!file_exists($templatePath)) {
             throw new \Exception('Шаблонный файл не найден');
         }

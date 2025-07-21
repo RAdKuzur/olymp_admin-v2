@@ -24,9 +24,8 @@ class ApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required',
-            'event_id' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'reason' => 'required'
         ];
     }
 }
