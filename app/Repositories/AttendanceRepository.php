@@ -7,14 +7,6 @@ use App\Models\Attendance;
 
 class AttendanceRepository
 {
-    private ApplicationRepository $applicationRepository;
-    public function __construct(
-        ApplicationRepository $applicationRepository
-    )
-    {
-        $this->applicationRepository = $applicationRepository;
-    }
-
     public function get($id)
     {
         return Attendance::find($id);
@@ -29,18 +21,19 @@ class AttendanceRepository
     public function save(Attendance $attendance){
         return $attendance->save();
     }
-    public function getAttendances()
+    public function getAttendances($applicationsId)
     {
-        return Attendance::where(['status' => AttendanceDictionary::ATTENDANCE])->get();
+        return Attendance::whereIn('status', [AttendanceDictionary::ATTENDANCE, AttendanceDictionary::DISTANCE])
+            ->whereIn('application_id', (array)$applicationsId)
+            ->get();
     }
     public function getByApplicationId($applicationId)
     {
         return Attendance::where(['application_id' => $applicationId])->get();
     }
-    public function getAttendancesByEventId($id)
+    public function getByApplicationsId($applicationId)
     {
-        $applications = $this->applicationRepository->getByEventId($id);
-        return Attendance::where(['status' => AttendanceDictionary::ATTENDANCE])->where(['application_id' => array_column($applications, 'id')])->get();
+        return Attendance::whereIn('application_id', $applicationId)->get();
     }
     public function create($applicationId){
         Attendance::create([

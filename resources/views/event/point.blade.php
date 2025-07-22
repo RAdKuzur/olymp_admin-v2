@@ -9,7 +9,6 @@
         <table class="table table-bordered table-striped mt-3">
             <thead>
             <tr>
-                <th>#</th>
                 <th>ФИО участника</th>
                 @foreach($tasks as $task)
                     <th>{{ $task->number }}</th>
@@ -17,16 +16,18 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($attendances as $task => $attendance)
+            @foreach($table as $row)
                 <tr>
-                    <td>{{ $index + 1}}</td>
-                    <td>{{ 'FIO' }}</td>
-                    @foreach($attendance->taskAttendances as $counter => $taskAttendance)
-                        <td>{{$taskAttendance->points}}</td>
+                    <td>{{     $row['person']->getFullFio() }}</td>
+                    @foreach($row['taskAttendances'] as $counter => $taskAttendance)
+                        <td> <input type="text"
+                                    name="task_points[{{ $taskAttendance->id }}]"
+                                    value="{{ $taskAttendance->points ?? '' }}"
+                                    maxlength="{{ $taskAttendance->task->max_points }}"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'');"></td>
                     @endforeach
                 </tr>
             @endforeach
-
             </tbody>
         </table>
     </div>

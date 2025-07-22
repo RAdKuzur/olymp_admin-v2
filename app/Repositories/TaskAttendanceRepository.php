@@ -32,10 +32,23 @@ class TaskAttendanceRepository
         $taskAttendances = TaskAttendance::where(['task_id' => array_column($tasks->toArray(), 'id')])->get();
         return $taskAttendances;
     }
+    public function getByAttendancesId($attendancesId)
+    {
+        return TaskAttendance::whereIn('attendance_id', $attendancesId)->get();
+    }
     public function save(TaskAttendance $taskAttendance){
         return $taskAttendance->save();
     }
     public function delete(TaskAttendance $taskAttendance){
         return $taskAttendance->delete();
+    }
+    public function create($attendanceId, $taskId, $points)
+    {
+        $taskAttendance = new TaskAttendance();
+        $taskAttendance->attendance_id = $attendanceId;
+        $taskAttendance->task_id = $taskId;
+        $taskAttendance->points = $points;
+        $this->save($taskAttendance);
+        return $taskAttendance->id;
     }
 }

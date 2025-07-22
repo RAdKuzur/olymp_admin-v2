@@ -70,6 +70,8 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/event/synchronize/{id}', [EventController::class, 'synchronize'])->name('event.synchronize');
     Route::post('/event/add-task/{id}', [EventController::class, 'addTask'])->name('event.add-task');
     Route::post('/event/change-attendance', [EventController::class, 'changeAttendance'])->name('event.change-attendance');
+    Route::delete('/event/delete-task/{id}', [EventController::class, 'deleteTask'])->name('event.delete-task');
+    Route::post('/event/change-score', [EventController::class, 'changeScore'])->name('event.change-score');
 
     Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');

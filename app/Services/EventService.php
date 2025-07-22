@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Components\Dictionaries\ApplicationStatusDictionary;
 use App\Models\Application;
 use App\Models\Event;
 use App\Repositories\AttendanceRepository;
@@ -57,21 +58,20 @@ class EventService
         $event->events = $item['events'];
         return $event;
     }
-    public function synchronize($applications, $eventId){
-        $currentAttendances = $this->attendanceRepository->getAttendancesByEventId($eventId);
+    public function synchronize($applications, $eventApplications){
         foreach ($applications as $application){
-            //создание явок
-            if (count($this->attendanceRepository->getByApplicationId($application->id)) == 0){
+            if (count($this->attendanceRepository->getByApplicationId($application->id)) == 0 && $application->status == ApplicationStatusDictionary::APPROVED){
                 $this->attendanceRepository->create($application->id);
             }
         }
-        foreach ($currentAttendances as $attendance){
-            if(!array_key_exists($attendance->application_id, $applications)){
+        $currentAttendances = $this->attendanceRepository->getByApplicationsId(array_column($eventApplications, 'id'));
+        $deletingIds = array_diff(array_column($currentAttendances->toArray(), 'application_id'), array_column($applications,'id'));
+        foreach ($deletingIds as $id){
+            $attendances = $this->attendanceRepository->getByApplicationId($id);
+            foreach ($attendances as $attendance) {
                 $this->attendanceRepository->delete($attendance);
             }
         }
-
-
     }
 
 

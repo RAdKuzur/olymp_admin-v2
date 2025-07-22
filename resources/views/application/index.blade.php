@@ -28,7 +28,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $application->code }}</td>
                     <td>{{ $application->userAPI->getFullFio() }}</td>
-                    <td>{{ $application->eventAPI->name }}</td>
+                    <td>{{ $application->eventAPI->name . ' ' . $subjects[$application->eventAPI->subject] }}</td>
                     <td>{{ $statuses[$application->status] }}</td>
                     <td>
                         @if($application->status == \App\Components\Dictionaries\ApplicationStatusDictionary::AWAITING)

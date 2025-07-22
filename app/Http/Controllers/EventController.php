@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Dictionaries\AttendanceDictionary;
 use App\Components\Dictionaries\SubjectDictionary;
+use App\Http\Requests\TaskRequest;
 use App\Repositories\ApplicationRepository;
 use App\Repositories\AttendanceRepository;
 use App\Repositories\EventRepository;
@@ -12,6 +13,7 @@ use App\Repositories\TaskRepository;
 use App\Services\ApplicationService;
 use App\Services\AttendanceService;
 use App\Services\EventService;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -24,6 +26,7 @@ class EventController extends Controller
     private TaskRepository $taskRepository;
     private TaskAttendanceRepository $taskAttendanceRepository;
     private AttendanceService $attendanceService;
+    private TaskService $taskService;
     public function __construct(
         EventService $eventService,
         EventRepository $eventRepository,
@@ -32,7 +35,8 @@ class EventController extends Controller
         AttendanceRepository $attendanceRepository,
         TaskRepository $taskRepository,
         TaskAttendanceRepository $taskAttendanceRepository,
-        AttendanceService $attendanceService
+        AttendanceService $attendanceService,
+        TaskService $taskService
     )
     {
         $this->eventService = $eventService;
@@ -43,6 +47,7 @@ class EventController extends Controller
         $this->taskRepository = $taskRepository;
         $this->taskAttendanceRepository = $taskAttendanceRepository;
         $this->attendanceService = $attendanceService;
+        $this->taskService = $taskService;
     }
 
     public function index($page = 1){
@@ -62,7 +67,7 @@ class EventController extends Controller
     {
         $eventsJson = $this->eventRepository->getByApiId($id);
         $event = $this->eventService->transformModel($eventsJson);
-        $tasks = $this->taskRepository->getAll();
+        $tasks = $this->taskRepository->getByEventId($id);
         return view('event/task', compact('event', 'tasks'));
     }
     public function attendance($id)
@@ -71,8 +76,9 @@ class EventController extends Controller
         $event = $this->eventService->transformModel($eventsJson);
         $applicationsJson = $this->applicationRepository->getByEventId($event->id);
         $applications = $this->applicationService->transform($applicationsJson);
+        $applications = $this->applicationService->confirmedApplications($applications);
         $attendanceStatuses = AttendanceDictionary::getList();
-        $attendances = $this->attendanceRepository->getAll();
+        $attendances = $this->attendanceService->applicationFilter($applications);
         $data = $this->attendanceService->createTable($attendances);
         return view('event/attendance', compact('applications', 'event' , 'attendanceStatuses', 'data'));
     }
@@ -80,30 +86,44 @@ class EventController extends Controller
     {
         $eventsJson = $this->eventRepository->getByApiId($id);
         $event = $this->eventService->transformModel($eventsJson);
-        $attendances = $this->attendanceRepository->getAttendancesByEventId($id);
-        $taskAttendances = $this->taskAttendanceRepository->getByEventId($id);
+        $applicationsJson = $this->applicationRepository->getByEventId($event->id);
+        $applications = $this->applicationService->transform($applicationsJson);
+        $applications = $this->applicationService->confirmedApplications($applications);
+        $attendances = $this->attendanceService->attendanceFilter($this->attendanceService->applicationFilter($applications));
+        $table = $this->attendanceService->createExtraTable($attendances);
         $tasks = $this->taskRepository->getByEventId($id);
-        return view('event/point', compact('event', 'taskAttendances', 'attendances', 'tasks'));
+        return view('event/point', compact('event', 'tasks', 'table'));
     }
     public function delete($id){
         return redirect()->route('event.index');
     }
     public function synchronize($id)
     {
-
         $applicationsJson = $this->applicationRepository->getByEventId($id);
-        $applications = $this->applicationService->transform($applicationsJson);
-        $this->eventService->synchronize($applications, $id);
+        $eventApplications = $this->applicationService->transform($applicationsJson);
+        $applications = $this->applicationService->confirmedApplications($eventApplications);
+        $this->eventService->synchronize($applications, $eventApplications);
         return redirect()->route('event.attendance', ['id' => $id]);
     }
-    public function addTask(Request $request, $id)
+    public function addTask(TaskRequest $request, $id)
     {
+        $data = $request->validated();
+        $this->taskService->createTasks($data, $id);
         return redirect()->route('event.task', ['id' => $id]);
+    }
+    public function deleteTask($id)
+    {
+        $task = $this->taskRepository->get($id);
+        $this->taskService->delete($task);
+        return redirect()->route('event.task', ['id' => $task->event_id]);
     }
     public function changeAttendance(Request $request){
         try {
             $attendance = $this->attendanceRepository->get($request->attendance_id);
             if ($attendance) {
+                /*добавление (удаление) TaskAttendance
+
+                */
                 $attendance->status = $request->status;
                 $attendance->save();
 
@@ -123,5 +143,9 @@ class EventController extends Controller
                 'message' => 'Ошибка сервера: ' . $e->getMessage()
             ], 500);
         }
+    }
+    public function changeScore(Request $request)
+    {
+
     }
 }

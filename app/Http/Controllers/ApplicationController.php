@@ -47,7 +47,8 @@ class ApplicationController extends Controller
         $applications = $this->applicationService->transform($applicationsJson);
         $applicationsAmount = $this->applicationRepository->getCount();
         $statuses = ApplicationStatusDictionary::getList();
-        return view('application.index', compact('applications', 'statuses', 'applicationsAmount'));
+        $subjects = SubjectDictionary::getList();
+        return view('application.index', compact('applications', 'statuses', 'applicationsAmount', 'subjects'));
     }
     public function create(){
         $statuses = ApplicationStatusDictionary::getList();

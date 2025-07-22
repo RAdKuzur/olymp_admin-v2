@@ -47,7 +47,7 @@
                     <td>{{ $task->number }}</td>
                     <td>{{ $task->max_points }}</td>
                     <td>
-                        <form action="{{ route('event.delete-task', $event->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('event.delete-task', $task->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот элемент?')">Удалить</button>

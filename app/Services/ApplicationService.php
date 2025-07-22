@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Components\Dictionaries\ApplicationStatusDictionary;
 use App\Models\Application;
 use App\Repositories\EventRepository;
 use App\Repositories\UserRepository;
@@ -55,5 +56,12 @@ class ApplicationService
         $model->userAPI = $this->userService->transformModel(($this->userRepository->getByApiId($model->user_id)));
         $model->eventAPI = $this->eventService->transformModel(($this->eventRepository->getByApiId($model->event_id)));
         return $model;
+    }
+    public function confirmedApplications($applications)
+    {
+        $array = array_filter($applications, function ($application) {
+            return $application->status == ApplicationStatusDictionary::APPROVED;
+        });
+        return $array;
     }
 }

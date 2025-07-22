@@ -12,10 +12,6 @@ class Task extends Model
     protected $fillable = [
         'event_id', 'max_points', 'number'
     ];
-    public $id;
-    public $event_id;
-    public $max_points;
-    public $number;
     public function taskAttendances(){
         return $this->hasMany(TaskAttendance::class);
     }
