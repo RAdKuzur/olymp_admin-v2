@@ -21,6 +21,7 @@
                     <td>{{     $row['person']->getFullFio() }}</td>
                     @foreach($row['taskAttendances'] as $counter => $taskAttendance)
                         <td> <input type="text"
+                                    id="task_points-{{ $taskAttendance->id }}"
                                     name="task_points[{{ $taskAttendance->id }}]"
                                     value="{{ $taskAttendance->points ?? '' }}"
                                     maxlength="{{ $taskAttendance->task->max_points }}"
@@ -31,4 +32,29 @@
             </tbody>
         </table>
     </div>
+    <script>
+        $(document).ready(function() {
+            // Обработчик изменения select
+            $('input[id^="task_points-"]').change(function() {
+                // Получаем ID из атрибута id (status-123 => 123)
+                var token = $('meta[name="csrf-token"]').attr('content');
+                var taskAttendanceId = this.id.split('-')[1];
+                var points = $(this).val();
+                console.log(taskAttendanceId, points);
+                $.ajax({
+                    url: '/event/change-score' , // Укажите ваш URL
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        _token: token,
+                        task_attendance_id: taskAttendanceId,
+                        points: points
+
+                    },
+                });
+            });
+        });
+    </script>
 @endsection

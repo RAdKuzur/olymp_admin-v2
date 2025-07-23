@@ -44,6 +44,10 @@ class TaskService
     }
     public function delete(Task $task)
     {
+        $taskAttendances = $this->taskAttendanceRepository->getByTaskId($task->id);
+        foreach ($taskAttendances as $taskAttendance) {
+            $this->taskAttendanceRepository->delete($taskAttendance);
+        }
         $this->taskRepository->delete($task);
     }
 }

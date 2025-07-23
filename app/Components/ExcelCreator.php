@@ -2,6 +2,10 @@
 
 namespace App\Components;
 
+use App\Components\Dictionaries\SubjectDictionary;
+use App\Repositories\ApplicationRepository;
+use App\Services\ApplicationService;
+use Illuminate\Support\Facades\App;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -10,31 +14,29 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExcelCreator
 {
-    public const RUSSIAN = [
-        'filepath' => '',
-        'lists' => [
-            'auditoriumList' => '9 классы',
-            'appearanceList' => [],
-            'pointLists' => [],
-            'ratingList' => [],
-            'formApplicationList' => [],
-            'formProtocolList' => [],
-            'formESUList' => []
-        ]
-    ];
-    public static function createList($filepath)
+    private ApplicationRepository $applicationRepository;
+    private ApplicationService $applicationService;
+    public function __construct(
+        ApplicationRepository $applicationRepository,
+        ApplicationService $applicationService
+    )
     {
-        $templatePath = resource_path($filepath);
+        $this->applicationRepository = $applicationRepository;
+        $this->applicationService = $applicationService;
+    }
+
+    public static function createList($subject, $data)
+    {
+
+        $templatePath = resource_path(SubjectDictionary::SUBJECTS[$subject]['filepath']);
         if (!file_exists($templatePath)) {
             throw new \Exception('Шаблонный файл не найден');
         }
         $spreadsheet = IOFactory::load($templatePath);
-        $sheet = $spreadsheet->getSheetByName(self::RUSSIAN['lists']['auditoriumList']);
-        // Заполняем данными
-        $sheet->setCellValue('A1', 'Hello');
-        $sheet->setCellValue('B1', 'World!');
-        $sheet->setCellValue('A2', 'Тест');
-        $sheet->setCellValue('B2', 'Русский текст');
+        //$sheet = $spreadsheet->getSheetByName(self::RUSSIAN['lists']['auditoriumList']);
+        //заполняем данными
+        self::fillRegisterList($data);
+        //
         $writer = new Xlsx($spreadsheet);
         $response = new StreamedResponse(
             function () use ($writer) {
@@ -45,5 +47,31 @@ class ExcelCreator
         $response->headers->set('Content-Disposition', 'attachment;filename="export.xlsx"');
         $response->headers->set('Cache-Control', 'max-age=0');
         return $response;
+    }
+    public static function fillRegisterList($data){
+
+    }
+    public static function fillAuditoriumList($data)
+    {
+
+    }
+    public static function fillAttendanceList($data){
+
+    }
+    public static function fillResultLists($data){
+
+    }
+    public static function fillRatingList($data){
+
+    }
+
+    public static function fillProtocolList($data){
+
+    }
+    public static function fillFacelessProtocolList($data){
+
+    }
+    public static function fillFormEsuList($data){
+
     }
 }

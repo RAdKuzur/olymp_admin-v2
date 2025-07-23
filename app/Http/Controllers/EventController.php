@@ -121,12 +121,20 @@ class EventController extends Controller
         try {
             $attendance = $this->attendanceRepository->get($request->attendance_id);
             if ($attendance) {
-                /*добавление (удаление) TaskAttendance
-
-                */
+                $tasks = $this->taskRepository->getByEventId($request->eventId);
+                if($request->status == AttendanceDictionary::NO_ATTENDANCE){
+                    $taskAttendances = $this->taskAttendanceRepository->getByAttendanceId($attendance->id);
+                    foreach ($taskAttendances as $taskAttendance) {
+                        $this->taskAttendanceRepository->delete($taskAttendance);
+                    }
+                }
+                else {
+                    foreach ($tasks as $task) {
+                        $this->taskAttendanceRepository->create($attendance->id, $task->id, 0);
+                    }
+                 }
                 $attendance->status = $request->status;
-                $attendance->save();
-
+                $this->attendanceRepository->save($attendance);
                 return response()->json([
                     'success' => true,
                     'message' => 'Статус успешно обновлен'
@@ -146,6 +154,26 @@ class EventController extends Controller
     }
     public function changeScore(Request $request)
     {
+        try {
+            $taskAttendance = $this->taskAttendanceRepository->get($request->task_attendance_id);
+            if ($taskAttendance) {
+                $taskAttendance->points = $request->points;
+                $this->taskAttendanceRepository->save($taskAttendance);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Статус успешно обновлен'
+                ]);
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Запись посещения не найдена'
+            ], 404);
 
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка сервера: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

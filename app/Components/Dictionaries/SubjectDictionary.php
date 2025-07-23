@@ -15,6 +15,38 @@ class SubjectDictionary
     public const RUSSIAN = 9;
     public const PHYSICS = 10;
     public const CHEMISTRY = 11;
+    public const SUBJECTS = [
+        self::BIOLOGY => [
+            'name' => 'Математика',
+            'filepath' => 'templates/MATH.xlsx',
+            'registerList' => [
+                'name' => 'лист регистрации',
+            ],
+            'auditoriumList' => [
+                'name' => 'список по аудитории',
+            ],
+            'appearanceList' => [
+                'name' => 'явка',
+            ],
+            'pointLists' => [
+                'name' => []
+            ],
+            'ratingList' => [
+                'name' => 'Предварительный рейтинг',
+            ],
+            'formApplicationList' => [
+                'name' => 'форма приложения к протоколу',
+            ],
+            'formProtocolList' => [
+                'name' => 'форма протокола обезличенная',
+            ],
+            'formESUList' => [
+                'name' => 'Форма ЭСУ',
+            ]
+        ],
+    ];
+
+
     public static function getList(){
         return [
             self::HISTORY => 'История',

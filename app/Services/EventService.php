@@ -73,6 +73,11 @@ class EventService
             }
         }
     }
-
+    public function filterBySubject($events, $subject)
+    {
+        return array_filter($events, function ($event) use ($subject) {
+            return $event->subject == $subject;
+        });
+    }
 
 }

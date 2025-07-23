@@ -35,7 +35,7 @@
                 // Получаем ID из атрибута id (status-123 => 123)
                 var attendanceId = this.id.split('-')[1];
                 var newStatus = $(this).val();
-
+                var eventId = '{{$event->id}}';
                 // CSRF токен для защиты Laravel
                 var token = $('meta[name="csrf-token"]').attr('content');
 
@@ -49,7 +49,8 @@
                     data: {
                         _token: token,
                         attendance_id: attendanceId,
-                        status: newStatus
+                        status: newStatus,
+                        eventId: eventId
                     },
                 });
             });
