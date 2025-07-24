@@ -57,4 +57,17 @@ class ParticipantService
         $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
         return $model;
     }
+    public function transformWithoutUser($data)
+    {
+        $item = $data['data']['data'];
+        $model = new Participant();
+        $model->id = $item['id'];
+        $model->citizenship = $item['citizenship'];
+        $model->disability = $item['disability'];
+        $model->class = $item['class_number'];
+        $model->user_id = $item['user_id'];
+        $model->school_id = $item['school_id'];
+        $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
+        return $model;
+    }
 }

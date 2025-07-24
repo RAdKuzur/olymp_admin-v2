@@ -35,6 +35,16 @@ class ParticipantRepository
             ]
         );
     }
+    public function getByApiUserId($id)
+    {
+        return $this->apiService->get(
+            ApiHelper::PARTICIPANT_BY_USER_URL_API . '/' . $id,
+            [],
+            [
+                'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
+            ]
+        );
+    }
     public function getCount()
     {
         $response = $this->apiService->get(

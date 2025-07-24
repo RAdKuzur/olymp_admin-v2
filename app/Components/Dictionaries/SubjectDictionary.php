@@ -16,37 +16,60 @@ class SubjectDictionary
     public const PHYSICS = 10;
     public const CHEMISTRY = 11;
     public const SUBJECTS = [
-        self::BIOLOGY => [
-            'name' => 'Математика',
-            'filepath' => 'templates/MATH.xlsx',
+        self::RUSSIAN => [
+            'name' => 'Русский язык',
+            'filepath' => 'templates/RUSSIAN.xlsx',
             'registerList' => [
                 'name' => 'лист регистрации',
+                'startCell' => ['A', 3]
             ],
             'auditoriumList' => [
                 'name' => 'список по аудитории',
+                'startCell' => ['A', 3]
             ],
-            'appearanceList' => [
+            'attendanceList' => [
                 'name' => 'явка',
+                'startCell' => ['A', 3]
             ],
             'pointLists' => [
-                'name' => []
+                [
+                    'name' => '9 класс',
+                    'codeCell' => ['B', 6],
+                    'pointCell' => ['C', 6],
+                    'ignoreColumns' => [],
+                ],
+                [
+                    'name' => '10 класс',
+                    'codeCell' => ['B', 6],
+                    'pointCell' => ['C', 6],
+                    'ignoreColumns' => [],
+                ],
+                [
+                    'name' => '11 класс',
+                    'codeCell' => ['B', 6],
+                    'pointCell' => ['C', 6],
+                    'ignoreColumns' => [],
+                ],
+
             ],
             'ratingList' => [
                 'name' => 'Предварительный рейтинг',
+                'startCell' => ['A', 4]
             ],
             'formApplicationList' => [
                 'name' => 'форма приложения к протоколу',
+                'startCell' => ['A', 6]
             ],
             'formProtocolList' => [
                 'name' => 'форма протокола обезличенная',
+                'startCell' => ['A', 6]
             ],
             'formESUList' => [
                 'name' => 'Форма ЭСУ',
+                'startCell' => ['A', 5]
             ]
         ],
     ];
-
-
     public static function getList(){
         return [
             self::HISTORY => 'История',

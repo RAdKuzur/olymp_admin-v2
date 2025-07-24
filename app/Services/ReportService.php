@@ -47,7 +47,7 @@ class ReportService
             $applicationsJson = $this->applicationRepository->getByEventId($event->id);
             $applications = $this->applicationService->transform($applicationsJson);
             $applications = $this->applicationService->confirmedApplications($applications);
-            $attendances = $this->attendanceService->attendanceFilter($this->attendanceService->applicationFilter($applications));
+            $attendances = $this->attendanceService->applicationFilter($applications);
             $participantData = [];
             foreach ($attendances as $attendance) {
                 $taskAttendances = $this->taskAttendanceRepository->getByAttendancesId(array_column([$attendance], 'id'));

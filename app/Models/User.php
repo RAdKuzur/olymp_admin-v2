@@ -18,6 +18,7 @@ class User extends Model
     public $gender;
     public $role;
     public $birthdate;
+    public $participantAPI;
 
     protected $table = 'user';
     protected $fillable = [

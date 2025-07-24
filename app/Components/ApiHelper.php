@@ -16,6 +16,7 @@ class ApiHelper
     public const USER_COUNT_URL_API = 'http://172.16.1.39:8181/api/users/count';
     public const PARTICIPANT_URL_API = 'http://172.16.1.39:8181/api/participants';
     public const PARTICIPANT_COUNT_URL_API = 'http://172.16.1.39:8181/api/participants/count';
+    public const PARTICIPANT_BY_USER_URL_API = 'http://172.16.1.39:8181/api/participants/byuser';
     public const SCHOOL_URL_API = 'http://172.16.1.39:8181/api/schools';
     public const SCHOOL_COUNT_URL_API = 'http://172.16.1.39:8181/api/schools/count';
     public const APPLICATION_URL_API = 'http://172.16.0.196:8082/applications';
