@@ -22,4 +22,11 @@ class Attendance extends Model
     {
         return $this->hasMany(TaskAttendance::class);
     }
+    public function getTotalScore(){
+        $points = 0;
+        foreach ($this->taskAttendances as $taskAttendance) {
+            $points = $points + $taskAttendance->points;
+        }
+        return $points;
+    }
 }

@@ -60,6 +60,7 @@ class AttendanceService
             $person = $this->userService->transformModel($userJson);
             $data[] = [
                 'attendance' => $attendance,
+                'application' => $application,
                 'person' => $person,
                 'taskAttendances' => $taskAttendances,
             ];

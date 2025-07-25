@@ -10,6 +10,7 @@
             <thead>
             <tr>
                 <th>ФИО участника</th>
+                <th>Код участника</th>
                 @foreach($tasks as $task)
                     <th>{{ $task->number }}</th>
                 @endforeach
@@ -19,6 +20,7 @@
             @foreach($table as $row)
                 <tr>
                     <td>{{     $row['person']->getFullFio() }}</td>
+                    <td>{{     $row['application']->code }}</td>
                     @foreach($row['taskAttendances'] as $counter => $taskAttendance)
                         <td> <input type="text"
                                     id="task_points-{{ $taskAttendance->id }}"

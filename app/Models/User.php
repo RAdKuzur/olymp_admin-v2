@@ -32,7 +32,7 @@ class User extends Model
         'birthdate'
     ];
     public function getFullFio(){
-        return $this->firstname . ' ' . $this->surname . ' ' . $this->patronymic;
+        return $this->surname . ' ' . $this->firstname . ' ' . $this->patronymic;
     }
 
 }

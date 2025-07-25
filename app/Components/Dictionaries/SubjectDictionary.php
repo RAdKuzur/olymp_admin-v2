@@ -37,18 +37,21 @@ class SubjectDictionary
                     'codeCell' => ['B', 6],
                     'pointCell' => ['C', 6],
                     'ignoreColumns' => [],
+                    'category' => [9]
                 ],
                 [
                     'name' => '10 класс',
                     'codeCell' => ['B', 6],
                     'pointCell' => ['C', 6],
                     'ignoreColumns' => [],
+                    'category' => [10]
                 ],
                 [
                     'name' => '11 класс',
                     'codeCell' => ['B', 6],
                     'pointCell' => ['C', 6],
                     'ignoreColumns' => [],
+                    'category' => [11]
                 ],
 
             ],

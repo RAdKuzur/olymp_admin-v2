@@ -43,6 +43,9 @@ class ReportService
         $data = [];
         $eventsJson = $this->eventRepository->getByApiAll();
         $events = $this->eventService->filterBySubject($this->eventService->transform($eventsJson), $id);
+        usort($events, function($a, $b) {
+            return $a->class_number <=> $b->class_number; // Сортировка по возрастанию
+        });
         foreach ($events as $event){
             $applicationsJson = $this->applicationRepository->getByEventId($event->id);
             $applications = $this->applicationService->transform($applicationsJson);
