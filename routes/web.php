@@ -8,6 +8,9 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Prometheus\CollectorRegistry;
+use Prometheus\RenderTextFormat;
+use Prometheus\Storage\InMemory;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,4 +78,20 @@ Route::group(['middleware' => 'auth.custom'], function() {
 
     Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');
+});
+Route::get('/metrics', function () {
+    $storageAdapter = new InMemory();
+    $registry = new CollectorRegistry($storageAdapter);
+    $counter = $registry->getOrRegisterCounter(
+        'app',
+        'requests_total',
+        'Total HTTP requests',
+        ['path']
+    );
+    $counter->inc([request()->path()]);
+    $renderer = new RenderTextFormat();
+    $metrics = $registry->getMetricFamilySamples();
+    $result = $renderer->render($metrics);
+    return response($result, 200)
+        ->header('Content-Type', RenderTextFormat::MIME_TYPE);
 });
