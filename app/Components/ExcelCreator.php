@@ -2,14 +2,13 @@
 
 namespace App\Components;
 
+use App\Components\Dictionaries\CountryDictionary;
+use App\Components\Dictionaries\DisabilityDictionary;
+use App\Components\Dictionaries\GenderDictionary;
+use App\Components\Dictionaries\ReasonParticipantDictionary;
 use App\Components\Dictionaries\SubjectDictionary;
-use App\Repositories\ApplicationRepository;
-use App\Services\ApplicationService;
-use DateTime;
-use Illuminate\Support\Facades\App;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -222,6 +221,30 @@ class ExcelCreator
     }
     public static function fillFormEsuList($data, $spreadsheet, $config){
         $sheet = $spreadsheet->getSheetByName($config['formESUList']['name']);
+        $counter = 0;
+        foreach ($data as $event) {
+            $column = Coordinate::columnIndexFromString($config['formESUList']['startCell'][0]);
+            foreach($event['participants'] as $participant){
+                $sheet->setCellValueByColumnAndRow($column, $counter + $config['formESUList']['startCell'][1], 'Астраханская область'); // переделать
+                $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formESUList']['startCell'][1], $participant['person']->surname);
+                $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formESUList']['startCell'][1], $participant['person']->firstname);
+                $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formESUList']['startCell'][1], $participant['person']->patronymic);
+                $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formESUList']['startCell'][1], GenderDictionary::getList()[$participant['person']->gender]);
+                $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formESUList']['startCell'][1], $participant['person']->birthdate);
 
+                $sheet->setCellValueByColumnAndRow($column + 6, $counter + $config['formESUList']['startCell'][1], CountryDictionary::getList()[$participant['person']->participantAPI->citizenship]);
+                $sheet->setCellValueByColumnAndRow($column + 7, $counter + $config['formESUList']['startCell'][1], DisabilityDictionary::getList()[$participant['person']->participantAPI->disability]);
+                $sheet->setCellValueByColumnAndRow($column + 7, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
+                $sheet->setCellValueByColumnAndRow($column + 8, $counter + $config['formESUList']['startCell'][1], $event['event']->class_number);
+                $sheet->setCellValueByColumnAndRow($column + 9, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->class);
+                $sheet->setCellValueByColumnAndRow($column + 10, $counter + $config['formESUList']['startCell'][1], $participant['attendance']->getTotalScore());
+                $sheet->setCellValueByColumnAndRow($column + 11, $counter + $config['formESUList']['startCell'][1], 'СТАТУС');
+
+                $sheet->setCellValueByColumnAndRow($column + 12, $counter + $config['formESUList']['startCell'][1], 'Прошлый год');
+                $sheet->setCellValueByColumnAndRow($column + 13, $counter + $config['formESUList']['startCell'][1], 'Муниципалитет');
+                $sheet->setCellValueByColumnAndRow($column + 14, $counter + $config['formESUList']['startCell'][1],ReasonParticipantDictionary::getList()[$participant['application']->reason]);
+                $counter++;
+            }
+        }
     }
 }
