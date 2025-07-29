@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Components\Dictionaries\RoleDictionary;
 use App\Models\Participant;
 use App\Models\User;
 use App\Repositories\ParticipantRepository;
@@ -25,7 +26,7 @@ class UserService
         $this->participantRepository = $participantRepository;
     }
 
-    public function transform($data)
+    public function transform($data, $participantFlag = true)
     {
         $models = [];
         foreach ($data['data']['data'] as $item) {
@@ -39,7 +40,9 @@ class UserService
             $model->gender = $item['gender'];
             $model->role = $item['role'];
             $model->birthdate = $item['birthdate'];
-            $model->participantAPI = $this->transformWithoutUser($this->participantRepository->getByApiUserId($model->id));
+            if ($participantFlag){
+               $model->participantAPI = $this->transformWithoutUser($this->participantRepository->getByApiUserId($model->id));
+            }
             $models[] = $model;
         }
         return $models;
@@ -73,5 +76,11 @@ class UserService
         $model->school_id = $item['school_id'];
         $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
         return $model;
+    }
+    public function filterParticipantUsers($users)
+    {
+        return array_filter($users, function ($user){
+            return $user->role == RoleDictionary::PARTICIPANT;
+        });
     }
 }

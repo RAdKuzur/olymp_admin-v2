@@ -2,6 +2,7 @@
 
 namespace App\Components;
 
+use App\Components\Dictionaries\AttendanceDictionary;
 use App\Components\Dictionaries\CountryDictionary;
 use App\Components\Dictionaries\DisabilityDictionary;
 use App\Components\Dictionaries\GenderDictionary;
@@ -95,14 +96,19 @@ class ExcelCreator
     public static function fillResultLists($data, $spreadsheet, $config){
 
         foreach ($config['pointLists'] as $list){
+            $counter = 0;
             $sheet = $spreadsheet->getSheetByName($list['name']);
             foreach ($data as $event){
                 if (in_array($event['event']->class_number, $list['category'])){
                     $column = Coordinate::columnIndexFromString($list['codeCell'][0]);
-                    foreach($event['participants'] as $counter => $participant){
-                        $sheet->setCellValueByColumnAndRow($column, $counter + $list['codeCell'][1], $participant['application']->code);
-                        foreach ($participant['taskAttendances'] as $index => $taskAttendance) {
-                            $sheet->setCellValueByColumnAndRow($column + $index + 1, $counter + $list['pointCell'][1], $taskAttendance->points);
+                    foreach($event['participants'] as $participant){
+                        if ($participant['attendance']->status == AttendanceDictionary::ATTENDANCE){
+                            $sheet->setCellValueByColumnAndRow($column, $counter + $list['codeCell'][1], $participant['application']->code);
+                            foreach ($participant['taskAttendances'] as $index => $taskAttendance) {
+                                $sheet->setCellValueByColumnAndRow($column + $index + 1, $counter + $list['pointCell'][1], $taskAttendance->points);
+
+                            }
+                            $counter++;
                         }
                     }
                 }
@@ -137,11 +143,13 @@ class ExcelCreator
             ]);
             $counter++;
             foreach($event['participants'] as $participant){
-                $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['ratingList']['startCell'][1], $participant['person']->getFullFio());
-                $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['ratingList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
-                $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['ratingList']['startCell'][1], $event['event']->class_number . ' ' . 'класс' );
-                $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['ratingList']['startCell'][1], $participant['attendance']->getTotalScore());
-                $counter++;
+                if ($participant['attendance']->status == AttendanceDictionary::ATTENDANCE) {
+                    $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['ratingList']['startCell'][1], $participant['person']->getFullFio());
+                    $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['ratingList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
+                    $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['ratingList']['startCell'][1], $event['event']->class_number . ' ' . 'класс');
+                    $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['ratingList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $counter++;
+                }
             }
         }
     }
@@ -174,12 +182,14 @@ class ExcelCreator
             ]);
             $counter++;
             foreach($event['participants'] as $participant){
-                $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->getFullFio());
-                $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formApplicationList']['startCell'][1], $participant['application']->code);
-                $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
-                $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс' );
-                $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
-                $counter++;
+                if ($participant['attendance']->status == AttendanceDictionary::ATTENDANCE) {
+                    $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->getFullFio());
+                    $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formApplicationList']['startCell'][1], $participant['application']->code);
+                    $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
+                    $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс');
+                    $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $counter++;
+                }
             }
         }
     }
@@ -211,11 +221,13 @@ class ExcelCreator
             ]);
             $counter++;
             foreach($event['participants'] as $participant){
-                $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formApplicationList']['startCell'][1], $participant['application']->code);
-                $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
-                $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс' );
-                $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
-                $counter++;
+                if ($participant['attendance']->status == AttendanceDictionary::ATTENDANCE) {
+                    $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formApplicationList']['startCell'][1], $participant['application']->code);
+                    $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
+                    $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс');
+                    $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $counter++;
+                }
             }
         }
     }
@@ -225,25 +237,25 @@ class ExcelCreator
         foreach ($data as $event) {
             $column = Coordinate::columnIndexFromString($config['formESUList']['startCell'][0]);
             foreach($event['participants'] as $participant){
-                $sheet->setCellValueByColumnAndRow($column, $counter + $config['formESUList']['startCell'][1], 'Астраханская область'); // переделать
-                $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formESUList']['startCell'][1], $participant['person']->surname);
-                $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formESUList']['startCell'][1], $participant['person']->firstname);
-                $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formESUList']['startCell'][1], $participant['person']->patronymic);
-                $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formESUList']['startCell'][1], GenderDictionary::getList()[$participant['person']->gender]);
-                $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formESUList']['startCell'][1], $participant['person']->birthdate);
-
-                $sheet->setCellValueByColumnAndRow($column + 6, $counter + $config['formESUList']['startCell'][1], CountryDictionary::getList()[$participant['person']->participantAPI->citizenship]);
-                $sheet->setCellValueByColumnAndRow($column + 7, $counter + $config['formESUList']['startCell'][1], DisabilityDictionary::getList()[$participant['person']->participantAPI->disability]);
-                $sheet->setCellValueByColumnAndRow($column + 7, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
-                $sheet->setCellValueByColumnAndRow($column + 8, $counter + $config['formESUList']['startCell'][1], $event['event']->class_number);
-                $sheet->setCellValueByColumnAndRow($column + 9, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->class);
-                $sheet->setCellValueByColumnAndRow($column + 10, $counter + $config['formESUList']['startCell'][1], $participant['attendance']->getTotalScore());
-                $sheet->setCellValueByColumnAndRow($column + 11, $counter + $config['formESUList']['startCell'][1], 'СТАТУС');
-
-                $sheet->setCellValueByColumnAndRow($column + 12, $counter + $config['formESUList']['startCell'][1], 'Прошлый год');
-                $sheet->setCellValueByColumnAndRow($column + 13, $counter + $config['formESUList']['startCell'][1], 'Муниципалитет');
-                $sheet->setCellValueByColumnAndRow($column + 14, $counter + $config['formESUList']['startCell'][1],ReasonParticipantDictionary::getList()[$participant['application']->reason]);
-                $counter++;
+                if ($participant['attendance']->status == AttendanceDictionary::ATTENDANCE) {
+                    $sheet->setCellValueByColumnAndRow($column, $counter + $config['formESUList']['startCell'][1], 'Астраханская область'); // переделать
+                    $sheet->setCellValueByColumnAndRow($column + 1, $counter + $config['formESUList']['startCell'][1], $participant['person']->surname);
+                    $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formESUList']['startCell'][1], $participant['person']->firstname);
+                    $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formESUList']['startCell'][1], $participant['person']->patronymic);
+                    $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formESUList']['startCell'][1], GenderDictionary::getList()[$participant['person']->gender]);
+                    $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formESUList']['startCell'][1], $participant['person']->birthdate);
+                    $sheet->setCellValueByColumnAndRow($column + 6, $counter + $config['formESUList']['startCell'][1], CountryDictionary::getList()[$participant['person']->participantAPI->citizenship]);
+                    $sheet->setCellValueByColumnAndRow($column + 7, $counter + $config['formESUList']['startCell'][1], DisabilityDictionary::getList()[$participant['person']->participantAPI->disability]);
+                    $sheet->setCellValueByColumnAndRow($column + 8, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
+                    $sheet->setCellValueByColumnAndRow($column + 9, $counter + $config['formESUList']['startCell'][1], $event['event']->class_number);
+                    $sheet->setCellValueByColumnAndRow($column + 10, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->class);
+                    $sheet->setCellValueByColumnAndRow($column + 11, $counter + $config['formESUList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $sheet->setCellValueByColumnAndRow($column + 12, $counter + $config['formESUList']['startCell'][1], 'СТАТУС');
+                    $sheet->setCellValueByColumnAndRow($column + 13, $counter + $config['formESUList']['startCell'][1], 'Прошлый год');
+                    $sheet->setCellValueByColumnAndRow($column + 14, $counter + $config['formESUList']['startCell'][1], 'Муниципалитет');
+                    $sheet->setCellValueByColumnAndRow($column + 15, $counter + $config['formESUList']['startCell'][1], ReasonParticipantDictionary::getList()[$participant['application']->reason]);
+                    $counter++;
+                }
             }
         }
     }

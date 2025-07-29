@@ -30,7 +30,7 @@ class UserController extends Controller
     public function index($page = 1){
         $usersJson = $this->userRepository->getByApiAll($page);
         $usersAmount = $this->userRepository->getCount();
-        $users = $this->userService->transform($usersJson);
+        $users = $this->userService->transform($usersJson, false);
         return view('user/index', compact('users', 'usersAmount'));
 
     }
