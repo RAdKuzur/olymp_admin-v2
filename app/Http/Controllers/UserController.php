@@ -28,9 +28,8 @@ class UserController extends Controller
     }
 
     public function index($page = 1){
-        $usersJson = $this->userRepository->getByApiAll($page);
         $usersAmount = $this->userRepository->getCount();
-        $users = $this->userService->transform($usersJson, false);
+        $users = $this->userService->findAll($page);
         return view('user/index', compact('users', 'usersAmount'));
 
     }
@@ -52,15 +51,13 @@ class UserController extends Controller
         return redirect('/user/index');
     }
     public function show($id){
-        $modelJson = $this->userRepository->getByApiId($id);
-        $model = $this->userService->transformModel($modelJson);
+        $model = $this->userService->find($id);
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
         return view('user/show', compact('model', 'roles', 'genders'));
     }
     public function edit($id){
-        $modelJson = $this->userRepository->getByApiId($id);
-        $user = $this->userService->transformModel($modelJson);
+        $user = $this->userService->find($id);
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
         return view('user/edit', compact('user', 'roles', 'genders'));

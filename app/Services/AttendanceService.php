@@ -10,26 +10,19 @@ use App\Repositories\UserRepository;
 
 class AttendanceService
 {
-    private ApplicationRepository $applicationRepository;
     private ApplicationService $applicationService;
     private UserService $userService;
-    private UserRepository $userRepository;
     private AttendanceRepository $attendanceRepository;
     private TaskAttendanceRepository $taskAttendanceRepository;
     public function __construct(
-        ApplicationRepository $applicationRepository,
         ApplicationService $applicationService,
         UserService $userService,
-        UserRepository $userRepository,
         AttendanceRepository $attendanceRepository,
         TaskAttendanceRepository $taskAttendanceRepository
-
     )
     {
-        $this->applicationRepository = $applicationRepository;
         $this->applicationService = $applicationService;
         $this->userService = $userService;
-        $this->userRepository = $userRepository;
         $this->attendanceRepository = $attendanceRepository;
         $this->taskAttendanceRepository = $taskAttendanceRepository;
     }
@@ -38,10 +31,8 @@ class AttendanceService
     {
         $data = [];
         foreach ($attendances as $attendance) {
-            $applicationJson = $this->applicationRepository->getByApiId($attendance->application_id);
-            $application = $this->applicationService->transformModel($applicationJson);
-            $userJson = $this->userRepository->getByApiId($application->user_id);
-            $person = $this->userService->transformModel($userJson);
+            $application = $this->applicationService->find($attendance->application_id);
+            $person = $this->userService->find($application->user_id);
             $data[] = [
                 'attendance' => $attendance,
                 'person' => $person
@@ -54,10 +45,8 @@ class AttendanceService
         $data = [];
         foreach ($attendances as $attendance) {
             $taskAttendances = $this->taskAttendanceRepository->getByAttendancesId(array_column([$attendance], 'id'));
-            $applicationJson = $this->applicationRepository->getByApiId($attendance->application_id);
-            $application = $this->applicationService->transformModel($applicationJson);
-            $userJson = $this->userRepository->getByApiId($application->user_id);
-            $person = $this->userService->transformModel($userJson);
+            $application = $this->applicationService->find($attendance->application_id);
+            $person = $this->userService->find($application->user_id);
             $data[] = [
                 'attendance' => $attendance,
                 'application' => $application,

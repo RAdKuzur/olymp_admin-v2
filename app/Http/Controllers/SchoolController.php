@@ -26,8 +26,7 @@ class SchoolController extends Controller
     }
 
     public function index($page = 1){
-        $schoolsJson = $this->schoolRepository->getByApiAll($page);
-        $schools = $this->schoolService->transform($schoolsJson);
+        $schools = $this->schoolService->findAll($page);
         $schoolsAmount = $this->schoolRepository->getCount();
         $regions = RegionDictionary::REGIONS;
         return view('school/index')->with('schools', $schools)->with('schoolsAmount', $schoolsAmount)->with('regions', $regions);
@@ -48,14 +47,12 @@ class SchoolController extends Controller
         return redirect('/school/index');
     }
     public function show($id){
-        $modelJson = $this->schoolRepository->getByApiId($id);
-        $model = $this->schoolService->transformModel($modelJson);
+        $model = $this->schoolService->find($id);
         $regions = RegionDictionary::REGIONS;
         return view('school/show')->with('model', $model)->with('regions', $regions);
     }
     public function edit($id){
-        $modelJson = $this->schoolRepository->getByApiId($id);
-        $model = $this->schoolService->transformModel($modelJson);
+        $model = $this->schoolService->find($id);
         $regions = RegionDictionary::REGIONS;
         return view('school/edit')->with('model', $model)->with('regions', $regions);
     }

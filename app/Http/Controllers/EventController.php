@@ -20,7 +20,6 @@ class EventController extends Controller
 {
     private EventService $eventService;
     private EventRepository $eventRepository;
-    private ApplicationRepository $applicationRepository;
     private ApplicationService $applicationService;
     private AttendanceRepository $attendanceRepository;
     private TaskRepository $taskRepository;
@@ -30,7 +29,6 @@ class EventController extends Controller
     public function __construct(
         EventService $eventService,
         EventRepository $eventRepository,
-        ApplicationRepository $applicationRepository,
         ApplicationService $applicationService,
         AttendanceRepository $attendanceRepository,
         TaskRepository $taskRepository,
@@ -41,7 +39,6 @@ class EventController extends Controller
     {
         $this->eventService = $eventService;
         $this->eventRepository = $eventRepository;
-        $this->applicationRepository = $applicationRepository;
         $this->applicationService = $applicationService;
         $this->attendanceRepository = $attendanceRepository;
         $this->taskRepository = $taskRepository;
@@ -51,31 +48,26 @@ class EventController extends Controller
     }
 
     public function index($page = 1){
-        $eventsJson = $this->eventRepository->getByApiAll($page);
-        $events = $this->eventService->transform($eventsJson);
+        $events = $this->eventService->findAll($page);
         $eventsAmount = $this->eventRepository->getCount();
         $subjects = SubjectDictionary::getList();
         return view('event/index', compact('events', 'eventsAmount', 'subjects'));
     }
     public function show($id){
-        $eventsJson = $this->eventRepository->getByApiId($id);
-        $event = $this->eventService->transformModel($eventsJson);
+        $event = $this->eventService->find($id);
         $subjects = SubjectDictionary::getList();
         return view('event/show', compact('event', 'subjects'));
     }
     public function task($id)
     {
-        $eventsJson = $this->eventRepository->getByApiId($id);
-        $event = $this->eventService->transformModel($eventsJson);
+        $event = $this->eventService->find($id);
         $tasks = $this->taskRepository->getByEventId($id);
         return view('event/task', compact('event', 'tasks'));
     }
     public function attendance($id)
     {
-        $eventsJson = $this->eventRepository->getByApiId($id);
-        $event = $this->eventService->transformModel($eventsJson);
-        $applicationsJson = $this->applicationRepository->getByEventId($event->id);
-        $applications = $this->applicationService->transform($applicationsJson);
+        $event = $this->eventService->find($id);
+        $applications = $this->applicationService->findByEventId($event->id);
         $applications = $this->applicationService->confirmedApplications($applications);
         $attendanceStatuses = AttendanceDictionary::getList();
         $attendances = $this->attendanceService->applicationFilter($applications);
@@ -84,10 +76,8 @@ class EventController extends Controller
     }
     public function point($id)
     {
-        $eventsJson = $this->eventRepository->getByApiId($id);
-        $event = $this->eventService->transformModel($eventsJson);
-        $applicationsJson = $this->applicationRepository->getByEventId($event->id);
-        $applications = $this->applicationService->transform($applicationsJson);
+        $event = $this->eventService->find($id);
+        $applications = $this->applicationService->findByEventId($event->id);
         $applications = $this->applicationService->confirmedApplications($applications);
         $attendances = $this->attendanceService->attendanceFilter($this->attendanceService->applicationFilter($applications));
         $table = $this->attendanceService->createExtraTable($attendances);
@@ -99,8 +89,7 @@ class EventController extends Controller
     }
     public function synchronize($id)
     {
-        $applicationsJson = $this->applicationRepository->getByEventId($id);
-        $eventApplications = $this->applicationService->transform($applicationsJson);
+        $eventApplications = $this->applicationService->findByEventId($id);
         $applications = $this->applicationService->confirmedApplications($eventApplications);
         $this->eventService->synchronize($applications, $eventApplications);
         return redirect()->route('event.attendance', ['id' => $id]);

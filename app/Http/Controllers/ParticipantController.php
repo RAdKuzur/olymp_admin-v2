@@ -20,20 +20,17 @@ class ParticipantController extends Controller
     private ParticipantRepository $participantRepository;
     private ParticipantService $participantService;
     private RabbitMQService $rabbitMQService;
-    private SchoolRepository $schoolRepository;
     private SchoolService $schoolService;
     public function __construct(
         ParticipantService $participantService,
         ParticipantRepository $participantRepository,
         RabbitMQService $rabbitMQService,
-        SchoolRepository $schoolRepository,
         SchoolService $schoolService
     )
     {
         $this->participantService = $participantService;
         $this->participantRepository = $participantRepository;
         $this->rabbitMQService = $rabbitMQService;
-        $this->schoolRepository = $schoolRepository;
         $this->schoolService = $schoolService;
     }
 
@@ -42,9 +39,8 @@ class ParticipantController extends Controller
         $disabilities = DisabilityDictionary::getList();
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
-        $participantsJson = $this->participantRepository->getByApiAll($page);
         $participantsAmount = $this->participantRepository->getCount();
-        $participants = $this->participantService->transform($participantsJson);
+        $participants = $this->participantService->findAll($page);
         return view('participant/index', [
             'disabilities' => $disabilities,
             'countries' => $countries,
@@ -57,7 +53,7 @@ class ParticipantController extends Controller
         $disabilities = DisabilityDictionary::getList();
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
-        $schools = $this->schoolService->transform($this->schoolRepository->getByApiAll());
+        $schools = $this->schoolService->findAll();
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
         return view('participant/create', [
@@ -85,8 +81,7 @@ class ParticipantController extends Controller
         $disabilities = DisabilityDictionary::getList();
         $countries = CountryDictionary::getList();
         $classes = ClassDictionary::getList();
-        $modelJson = $this->participantRepository->getByApiId($id);
-        $participant = $this->participantService->transformModel($modelJson);
+        $participant = $this->participantService->find($id);
         return view('participant/show', [
             'disabilities' => $disabilities,
             'countries' => $countries,
@@ -100,9 +95,8 @@ class ParticipantController extends Controller
         $classes = ClassDictionary::getList();
         $roles = RoleDictionary::getList();
         $genders = GenderDictionary::getList();
-        $schools = $this->schoolService->transform($this->schoolRepository->getByApiAll());
-        $modelJson = $this->participantRepository->getByApiId($id);
-        $participant = $this->participantService->transformModel($modelJson);
+        $schools = $this->schoolService->findAll();
+        $participant = $this->participantService->find($id);
         return view('participant/edit', [
             'disabilities' => $disabilities,
             'countries' => $countries,

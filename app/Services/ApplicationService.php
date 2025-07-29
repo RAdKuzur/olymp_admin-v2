@@ -2,60 +2,76 @@
 
 namespace App\Services;
 
+use App\Builder\ApplicationBuilder;
+use App\Builder\EventBuilder;
+use App\Builder\UserBuilder;
 use App\Components\Dictionaries\ApplicationStatusDictionary;
 use App\Models\Application;
+use App\Repositories\ApplicationRepository;
 use App\Repositories\EventRepository;
 use App\Repositories\UserRepository;
 
 class ApplicationService
 {
-    public UserService $userService;
-    public EventService $eventService;
-    public UserRepository $userRepository;
-    public EventRepository $eventRepository;
+    private ApplicationRepository $applicationRepository;
+    private EventRepository $eventRepository;
+    private UserRepository $userRepository;
+    private ApplicationBuilder $applicationBuilder;
+    private EventBuilder $eventBuilder;
+    private UserBuilder $userBuilder;
     public function __construct(
-        UserService $userService,
-        EventService $eventService,
+        ApplicationRepository $applicationRepository,
+        EventRepository $eventRepository,
         UserRepository $userRepository,
-        EventRepository $eventRepository
+        ApplicationBuilder $applicationBuilder,
+        EventBuilder $eventBuilder,
+        UserBuilder $userBuilder
     )
     {
-        $this->userService = $userService;
-        $this->eventService = $eventService;
-        $this->userRepository = $userRepository;
+        $this->applicationRepository = $applicationRepository;
         $this->eventRepository = $eventRepository;
+        $this->userRepository = $userRepository;
+        $this->applicationBuilder = $applicationBuilder;
+        $this->eventBuilder = $eventBuilder;
+        $this->userBuilder = $userBuilder;
     }
 
-    public function transform($data)
+    public function find($id)
     {
-        $models = [];
-        foreach ($data['data']['data'] as $item) {
-            $model = new Application();
-            $model->id = $item['id'];
-            $model->user_id = $item['userId'];
-            $model->code = $item['code'];
-            $model->reason = $item['reason'];
-            $model->event_id = $item['eventId'];
-            $model->status = $item['status'];
-            $model->userAPI = $this->userService->transformModel(($this->userRepository->getByApiId($model->user_id)));
-            $model->eventAPI = $this->eventService->transformModel(($this->eventRepository->getByApiId($model->event_id)));
-            $models[] = $model;
-        }
-        return $models;
+        $application = $this->applicationBuilder->build($this->applicationRepository->getByApiId($id));
+        $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+        $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
+        $this->applicationBuilder->buildUser($application, $user);
+        $this->applicationBuilder->buildEvent($application, $event);
+        return $application;
     }
-    public function transformModel($data)
+    public function findAll($page)
     {
-        $item = $data['data']['data'];
-        $model = new Application();
-        $model->id = $item['id'];
-        $model->user_id = $item['userId'];
-        $model->code = $item['code'];
-        $model->reason = $item['reason'];
-        $model->event_id = $item['eventId'];
-        $model->status = $item['status'];
-        $model->userAPI = $this->userService->transformModel(($this->userRepository->getByApiId($model->user_id)));
-        $model->eventAPI = $this->eventService->transformModel(($this->eventRepository->getByApiId($model->event_id)));
-        return $model;
+        $applications = [];
+        $data = $this->applicationRepository->getByApiAll($page);
+        foreach ($data as $item) {
+            $application = $this->applicationBuilder->build($item);
+            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+            $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
+            $this->applicationBuilder->buildUser($application, $user);
+            $this->applicationBuilder->buildEvent($application, $event);
+            $applications[] = $application;
+        }
+        return $applications;
+    }
+    public function findByEventId($eventId)
+    {
+        $applications = [];
+        $data = $this->applicationRepository->getByEventId($eventId);
+        foreach ($data as $item) {
+            $application = $this->applicationBuilder->build($item);
+            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+            $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
+            $this->applicationBuilder->buildUser($application, $user);
+            $this->applicationBuilder->buildEvent($application, $event);
+            $applications[] = $application;
+        }
+        return $applications;
     }
     public function confirmedApplications($applications)
     {

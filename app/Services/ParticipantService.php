@@ -3,71 +3,58 @@
 namespace App\Services;
 
 
+use App\Builder\ParticipantBuilder;
+use App\Builder\SchoolBuilder;
+use App\Builder\UserBuilder;
 use App\Models\Participant;
+use App\Repositories\ParticipantRepository;
 use App\Repositories\SchoolRepository;
 use App\Repositories\UserRepository;
 
 class ParticipantService
 {
+    private ParticipantBuilder $participantBuilder;
+    private ParticipantRepository $participantRepository;
+    private UserBuilder $userBuilder;
     private UserRepository $userRepository;
+    private SchoolBuilder $schoolBuilder;
     private SchoolRepository $schoolRepository;
-    private UserService $userService;
-    private SchoolService $schoolService;
     public function __construct(
+        ParticipantBuilder $participantBuilder,
+        ParticipantRepository $participantRepository,
+        UserBuilder $userBuilder,
         UserRepository $userRepository,
-        SchoolRepository $schoolRepository,
-        UserService $userService,
-        SchoolService $schoolService
+        SchoolBuilder $schoolBuilder,
+        SchoolRepository $schoolRepository
     )
     {
+        $this->participantBuilder = $participantBuilder;
+        $this->participantRepository = $participantRepository;
+        $this->userBuilder = $userBuilder;
         $this->userRepository = $userRepository;
+        $this->schoolBuilder = $schoolBuilder;
         $this->schoolRepository = $schoolRepository;
-        $this->userService = $userService;
-        $this->schoolService = $schoolService;
     }
-
-    public function transform($data)
+    public function find($id)
     {
-        $models = [];
-        foreach ($data['data']['data'] as $item) {
-            $model = new Participant();
-            $model->id = $item['id'];
-            $model->citizenship = $item['citizenship'];
-            $model->disability = $item['disability'];
-            $model->class = $item['class_number'];
-            $model->user_id = $item['user_id'];
-            $model->school_id = $item['school_id'];
-            $model->userAPI = $this->userService->transformModel(($this->userRepository->getByApiId($model->user_id)));
-            $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
-            $models[] = $model;
+        $participant = $this->participantBuilder->build($this->participantRepository->getByApiId($id));
+        $user = $this->userBuilder->build($this->userRepository->getByApiId($participant->user_id));
+        $school = $this->schoolBuilder->build($this->schoolRepository->getByApiId($participant->school_id));
+        $this->participantBuilder->buildUser($participant, $user);
+        $this->participantBuilder->buildSchool($participant, $school);
+        return $participant;
+    }
+    public function findAll($page){
+        $participants = [];
+        $data = $this->participantRepository->getByApiAll($page);
+        foreach($data as $item){
+            $participant = $this->participantBuilder->build($item);
+            $user = $this->userBuilder->build($this->userRepository->getByApiId($participant->user_id));
+            $school = $this->schoolBuilder->build($this->schoolRepository->getByApiId($participant->school_id));
+            $this->participantBuilder->buildUser($participant, $user);
+            $this->participantBuilder->buildSchool($participant, $school);
+            $participants[] = $participant;
         }
-        return $models;
-    }
-    public function transformModel($data)
-    {
-        $item = $data['data']['data'];
-        $model = new Participant();
-        $model->id = $item['id'];
-        $model->citizenship = $item['citizenship'];
-        $model->disability = $item['disability'];
-        $model->class = $item['class_number'];
-        $model->user_id = $item['user_id'];
-        $model->school_id = $item['school_id'];
-        $model->userAPI = $this->userService->transformModel(($this->userRepository->getByApiId($model->user_id)));
-        $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
-        return $model;
-    }
-    public function transformWithoutUser($data)
-    {
-        $item = $data['data']['data'];
-        $model = new Participant();
-        $model->id = $item['id'];
-        $model->citizenship = $item['citizenship'];
-        $model->disability = $item['disability'];
-        $model->class = $item['class_number'];
-        $model->user_id = $item['user_id'];
-        $model->school_id = $item['school_id'];
-        $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
-        return $model;
+        return $participants;
     }
 }

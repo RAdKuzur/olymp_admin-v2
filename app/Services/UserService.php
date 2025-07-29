@@ -2,85 +2,53 @@
 
 namespace App\Services;
 
+use App\Builder\ParticipantBuilder;
+use App\Builder\UserBuilder;
 use App\Components\Dictionaries\RoleDictionary;
 use App\Models\Participant;
 use App\Models\User;
 use App\Repositories\ParticipantRepository;
 use App\Repositories\SchoolRepository;
+use App\Repositories\UserRepository;
 use DateTime;
 use function Illuminate\Events\queueable;
 
 class UserService
 {
-    private SchoolService $schoolService;
-    private SchoolRepository $schoolRepository;
+    private UserRepository $userRepository;
+    private UserBuilder $userBuilder;
     private ParticipantRepository $participantRepository;
+    private ParticipantBuilder $participantBuilder;
     public function __construct(
-        SchoolRepository $schoolRepository,
-        SchoolService $schoolService,
-        ParticipantRepository $participantRepository
+        UserRepository $userRepository,
+        UserBuilder $userBuilder,
+        ParticipantRepository $participantRepository,
+        ParticipantBuilder $participantBuilder
     )
     {
-        $this->schoolRepository = $schoolRepository;
-        $this->schoolService = $schoolService;
+        $this->userRepository = $userRepository;
+        $this->userBuilder = $userBuilder;
         $this->participantRepository = $participantRepository;
+        $this->participantBuilder = $participantBuilder;
     }
 
-    public function transform($data, $participantFlag = true)
+    public function find($id)
     {
-        $models = [];
-        foreach ($data['data']['data'] as $item) {
-            $model = new User();
-            $model->id = $item['id'];
-            $model->email = $item['email'];
-            $model->firstname = $item['firstname'];
-            $model->surname = $item['surname'];
-            $model->patronymic = $item['patronymic'];
-            $model->phone_number = $item['phone_number'];
-            $model->gender = $item['gender'];
-            $model->role = $item['role'];
-            $model->birthdate = $item['birthdate'];
-            if ($participantFlag){
-               $model->participantAPI = $this->transformWithoutUser($this->participantRepository->getByApiUserId($model->id));
-            }
-            $models[] = $model;
+        $user = $this->userBuilder->build($this->userRepository->getByApiId($id));
+        $participant = $this->participantBuilder->build($this->participantRepository->getByApiUserId($id));
+        $this->userBuilder->buildParticipant($user, $participant);
+        return $user;
+    }
+    public function findAll($page = NULL){
+        $users = [];
+        $data = $this->userRepository->getByApiAll($page);
+        foreach ($data as $item) {
+            $user = $this->userBuilder->build($item);
+            $participant = $this->participantBuilder->build($this->participantRepository->getByApiUserId($user->id));
+            $this->userBuilder->buildParticipant($user, $participant);
+            $users[] = $user;
         }
-        return $models;
+        return $users;
     }
-    public function transformModel($data)
-    {
-        $item = $data['data']['data'];
-        $model = new User();
-        $model->id = $item['id'];
-        $model->email = $item['email'];
-        $model->firstname = $item['firstname'];
-        $model->surname = $item['surname'];
-        $model->patronymic = $item['patronymic'];
-        $model->phone_number = $item['phone_number'];
-        $model->gender = $item['gender'];
-        $model->role = $item['role'];
-        $date = DateTime::createFromFormat('Y-m-d H:i:s O e', $item['birthdate']);
-        $model->participantAPI = $this->transformWithoutUser($this->participantRepository->getByApiUserId($model->id));
-        $model->birthdate = $date->format('Y-m-d');
-        return $model;
-    }
-    public function transformWithoutUser($data)
-    {
-        $item = $data['data']['data'];
-        $model = new Participant();
-        $model->id = $item['id'];
-        $model->citizenship = $item['citizenship'];
-        $model->disability = $item['disability'];
-        $model->class = $item['class_number'];
-        $model->user_id = $item['user_id'];
-        $model->school_id = $item['school_id'];
-        $model->schoolAPI = $this->schoolService->transformModel(($this->schoolRepository->getByApiId($model->school_id)));
-        return $model;
-    }
-    public function filterParticipantUsers($users)
-    {
-        return array_filter($users, function ($user){
-            return $user->role == RoleDictionary::PARTICIPANT;
-        });
-    }
+
 }

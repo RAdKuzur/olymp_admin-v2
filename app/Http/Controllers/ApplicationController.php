@@ -20,31 +20,24 @@ class ApplicationController extends Controller
     private ApplicationService $applicationService;
     private ApplicationRepository $applicationRepository;
     private UserService $userService;
-    private UserRepository $userRepository;
     private EventService $eventService;
-    private EventRepository $eventRepository;
     public function __construct(
         RabbitMQService $rabbitMQService,
         ApplicationService $applicationService,
         ApplicationRepository $applicationRepository,
         UserService $userService,
-        UserRepository $userRepository,
-        EventService $eventService,
-        EventRepository $eventRepository
+        EventService $eventService
     )
     {
         $this->rabbitMQService = $rabbitMQService;
         $this->applicationService = $applicationService;
         $this->applicationRepository = $applicationRepository;
         $this->userService = $userService;
-        $this->userRepository = $userRepository;
         $this->eventService = $eventService;
-        $this->eventRepository = $eventRepository;
     }
 
     public function index($page = 1){
-        $applicationsJson = $this->applicationRepository->getByApiAll($page);
-        $applications = $this->applicationService->transform($applicationsJson);
+        $applications = $this->applicationService->findAll($page);
         $applicationsAmount = $this->applicationRepository->getCount();
         $statuses = ApplicationStatusDictionary::getList();
         $subjects = SubjectDictionary::getList();
@@ -52,8 +45,8 @@ class ApplicationController extends Controller
     }
     public function create(){
         $statuses = ApplicationStatusDictionary::getList();
-        $users = $this->userService->transform($this->userRepository->getByApiAll());
-        $events = $this->eventService->transform($this->eventRepository->getByApiAll());
+        $users = $this->userService->findAll();
+        $events = $this->eventService->findAll();
         return view('application.create')->with(compact('users', 'statuses', 'events'));
     }
     public function store(ApplicationRequest $request){
@@ -68,19 +61,17 @@ class ApplicationController extends Controller
         return redirect()->route('application.index');
     }
     public function show($id){
-        $applicationJson = $this->applicationRepository->getByApiId($id);
-        $application = $this->applicationService->transformModel($applicationJson);
+        $application = $this->applicationService->find($id);
         $statuses = ApplicationStatusDictionary::getList();
         return view('application.show', compact('application', 'statuses'));
     }
     public function edit($id){
-        $applicationJson = $this->applicationRepository->getByApiId($id);
-        $application = $this->applicationService->transformModel($applicationJson);
+        $application = $this->applicationService->find($id);
         $statuses = ApplicationStatusDictionary::getList();
-        $users = $this->userService->transform($this->userRepository->getByApiAll());
+        $users = $this->userService->findAll();
         $subjects = SubjectDictionary::getList();
         $reasons = ReasonParticipantDictionary::getList();
-        $events = $this->eventService->transform($this->eventRepository->getByApiAll());
+        $events = $this->eventService->findAll();
         return view('application.edit')->with(compact('application', 'users', 'statuses', 'events', 'reasons', 'subjects'));
     }
     public function update(ApplicationRequest $request, $id){

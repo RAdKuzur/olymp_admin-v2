@@ -2,61 +2,43 @@
 
 namespace App\Services;
 
+use App\Builder\EventBuilder;
 use App\Components\Dictionaries\ApplicationStatusDictionary;
 use App\Models\Application;
 use App\Models\Event;
 use App\Repositories\AttendanceRepository;
+use App\Repositories\EventRepository;
 use DateTime;
 
 class EventService
 {
     public AttendanceRepository $attendanceRepository;
+    private EventRepository $eventRepository;
+    private EventBuilder $eventBuilder;
     public function __construct(
-        AttendanceRepository $attendanceRepository
+        AttendanceRepository $attendanceRepository,
+        EventRepository $eventRepository,
+        EventBuilder $eventBuilder
     )
     {
         $this->attendanceRepository = $attendanceRepository;
+        $this->eventRepository = $eventRepository;
+        $this->eventBuilder = $eventBuilder;
     }
 
-    public function transform($data)
+    public function find($id)
     {
-        $models = [];
-        foreach ($data['data']['data']['events'] as $item) {
-            $event = new Event();
-            $event->id = $item['id'];
-            $event->name = $item['name'];
-            $date = DateTime::createFromFormat(DateTime::ATOM,  $item['start_date']);
-            $event->start_date  = $date->format('Y-m-d');
-            $date = DateTime::createFromFormat(DateTime::ATOM, $item['end_date']);
-            $event->end_date = $date->format('Y-m-d');
-            $event->event_type = $item['event_type'];
-            $event->class_number = $item['class_number'];
-            $event->previous_event_id = $item['previous_event_id'];
-            $event->subject = $item['subject'];
-            $event->additional_info = $item['additional_info'];
-            $event->events = $item['events'];
-
-            $models[] = $event;
-        }
-        return $models;
-    }
-    public function transformModel($data)
-    {
-        $item = $data['data']['data'];
-        $event = new Event();
-        $event->id = $item['id'];
-        $event->name = $item['name'];
-        $date = DateTime::createFromFormat(DateTime::ATOM,  $item['start_date']);
-        $event->start_date  = $date->format('Y-m-d');
-        $date = DateTime::createFromFormat(DateTime::ATOM, $item['end_date']);
-        $event->end_date = $date->format('Y-m-d');
-        $event->event_type = $item['event_type'];
-        $event->class_number = $item['class_number'];
-        $event->previous_event_id = $item['previous_event_id'];
-        $event->subject = $item['subject'];
-        $event->additional_info = $item['additional_info'];
-        $event->events = $item['events'];
+        $event = $this->eventBuilder->build($this->eventRepository->getByApiId($id));
         return $event;
+    }
+    public function findAll($page = NULL)
+    {
+        $events = [];
+        $data = $this->eventRepository->getByApiAll($page);
+        foreach ($data as $event) {
+            $events[] = $this->eventBuilder->build($event);
+        }
+        return $events;
     }
     public function synchronize($applications, $eventApplications){
         foreach ($applications as $application){

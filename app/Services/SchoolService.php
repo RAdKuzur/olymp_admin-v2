@@ -2,31 +2,33 @@
 
 namespace App\Services;
 
+use App\Builder\SchoolBuilder;
 use App\Models\School;
+use App\Repositories\SchoolRepository;
 
 class SchoolService
 {
-    public function transform($data)
+    private SchoolRepository $schoolRepository;
+    private SchoolBuilder $schoolBuilder;
+    public function __construct(
+        SchoolRepository $schoolRepository,
+        SchoolBuilder $schoolBuilder
+    )
     {
-        $models = [];
-
-        foreach ($data['data']['data'] as $item) {
-            $model = new School();
-            $model->id = $item['id'];
-            $model->name = $item['name'];
-            $model->region = $item['region'];
-            $models[] = $model;
-        }
-        return $models;
+        $this->schoolRepository = $schoolRepository;
+        $this->schoolBuilder = $schoolBuilder;
     }
-    public function transformModel($data)
+    public function find($id){
+        $school = $this->schoolBuilder->build($this->schoolRepository->getByApiId($id));
+        return $school;
+    }
+    public function findAll($page = NULL)
     {
-
-        $item = $data['data']['data'];
-        $model = new School();
-        $model->id = $item['id'];
-        $model->name = $item['name'];
-        $model->region = $item['region'];
-        return $model;
+        $data = $this->schoolRepository->getByApiAll($page);
+        $schools = [];
+        foreach ($data as $school) {
+            $schools[] = $this->schoolBuilder->build($school);
+        }
+        return $schools;
     }
 }
