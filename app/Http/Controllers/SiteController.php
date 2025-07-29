@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Components\ApiHelper;
 use App\Http\Requests\LoginRequest;
 use App\Services\ApiService;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
 class SiteController extends Controller

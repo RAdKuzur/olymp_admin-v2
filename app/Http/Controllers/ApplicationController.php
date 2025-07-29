@@ -8,8 +8,6 @@ use App\Components\Dictionaries\SubjectDictionary;
 use App\Components\RabbitMQHelper;
 use App\Http\Requests\ApplicationRequest;
 use App\Repositories\ApplicationRepository;
-use App\Repositories\EventRepository;
-use App\Repositories\UserRepository;
 use App\Services\ApplicationService;
 use App\Services\EventService;
 use App\Services\RabbitMQService;

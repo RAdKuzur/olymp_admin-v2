@@ -6,7 +6,6 @@ use App\Builder\ApplicationBuilder;
 use App\Builder\EventBuilder;
 use App\Builder\UserBuilder;
 use App\Components\Dictionaries\ApplicationStatusDictionary;
-use App\Models\Application;
 use App\Repositories\ApplicationRepository;
 use App\Repositories\EventRepository;
 use App\Repositories\UserRepository;

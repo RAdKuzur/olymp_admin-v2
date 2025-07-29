@@ -4,14 +4,8 @@ namespace App\Services;
 
 use App\Builder\ParticipantBuilder;
 use App\Builder\UserBuilder;
-use App\Components\Dictionaries\RoleDictionary;
-use App\Models\Participant;
-use App\Models\User;
 use App\Repositories\ParticipantRepository;
-use App\Repositories\SchoolRepository;
 use App\Repositories\UserRepository;
-use DateTime;
-use function Illuminate\Events\queueable;
 
 class UserService
 {

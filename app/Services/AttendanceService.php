@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Components\Dictionaries\AttendanceDictionary;
-use App\Repositories\ApplicationRepository;
 use App\Repositories\AttendanceRepository;
 use App\Repositories\TaskAttendanceRepository;
-use App\Repositories\UserRepository;
 
 class AttendanceService
 {

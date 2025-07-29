@@ -10,7 +10,6 @@ use App\Components\Dictionaries\RoleDictionary;
 use App\Components\RabbitMQHelper;
 use App\Http\Requests\ParticipantRequest;
 use App\Repositories\ParticipantRepository;
-use App\Repositories\SchoolRepository;
 use App\Services\ParticipantService;
 use App\Services\RabbitMQService;
 use App\Services\SchoolService;

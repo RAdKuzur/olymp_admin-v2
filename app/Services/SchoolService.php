@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Builder\SchoolBuilder;
-use App\Models\School;
 use App\Repositories\SchoolRepository;
 
 class SchoolService

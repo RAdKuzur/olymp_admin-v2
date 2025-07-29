@@ -4,11 +4,8 @@ namespace App\Services;
 
 use App\Builder\EventBuilder;
 use App\Components\Dictionaries\ApplicationStatusDictionary;
-use App\Models\Application;
-use App\Models\Event;
 use App\Repositories\AttendanceRepository;
 use App\Repositories\EventRepository;
-use DateTime;
 
 class EventService
 {

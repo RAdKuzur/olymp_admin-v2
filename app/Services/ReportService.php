@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\ApplicationRepository;
-use App\Repositories\EventRepository;
 use App\Repositories\TaskAttendanceRepository;
-use App\Repositories\UserRepository;
 
 class ReportService
 {

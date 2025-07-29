@@ -6,7 +6,6 @@ namespace App\Services;
 use App\Builder\ParticipantBuilder;
 use App\Builder\SchoolBuilder;
 use App\Builder\UserBuilder;
-use App\Models\Participant;
 use App\Repositories\ParticipantRepository;
 use App\Repositories\SchoolRepository;
 use App\Repositories\UserRepository;

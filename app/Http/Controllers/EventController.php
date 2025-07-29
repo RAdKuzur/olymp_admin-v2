@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Components\Dictionaries\AttendanceDictionary;
 use App\Components\Dictionaries\SubjectDictionary;
 use App\Http\Requests\TaskRequest;
-use App\Repositories\ApplicationRepository;
 use App\Repositories\AttendanceRepository;
 use App\Repositories\EventRepository;
 use App\Repositories\TaskAttendanceRepository;

@@ -9,7 +9,6 @@ use App\Http\Requests\UserRequest;
 use App\Repositories\UserRepository;
 use App\Services\RabbitMQService;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {

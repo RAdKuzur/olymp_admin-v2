@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Components\ApiHelper;
-use App\Components\RabbitMQHelper;
 use App\Services\ApiService;
 use Illuminate\Support\Facades\Cookie;
 

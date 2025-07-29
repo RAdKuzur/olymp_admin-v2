@@ -8,7 +8,6 @@ use App\Repositories\EventRepository;
 use App\Services\ApplicationService;
 use App\Services\EventService;
 use App\Services\ReportService;
-use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
