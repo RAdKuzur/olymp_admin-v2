@@ -12,6 +12,7 @@ use App\Repositories\TaskAttendanceRepository;
 use App\Repositories\TaskRepository;
 use App\Services\ApplicationService;
 use App\Services\AttendanceService;
+use App\Services\EventJuryService;
 use App\Services\EventScoreService;
 use App\Services\EventService;
 use App\Services\TaskService;
@@ -28,6 +29,7 @@ class EventController extends Controller
     private AttendanceService $attendanceService;
     private TaskService $taskService;
     private EventScoreService $eventScoreService;
+    private EventJuryService $eventJuryService;
     public function __construct(
         EventService $eventService,
         EventRepository $eventRepository,
@@ -37,7 +39,8 @@ class EventController extends Controller
         TaskAttendanceRepository $taskAttendanceRepository,
         AttendanceService $attendanceService,
         TaskService $taskService,
-        EventScoreService $eventScoreService
+        EventScoreService $eventScoreService,
+        EventJuryService $eventJuryService
     )
     {
         $this->eventService = $eventService;
@@ -49,6 +52,7 @@ class EventController extends Controller
         $this->attendanceService = $attendanceService;
         $this->taskService = $taskService;
         $this->eventScoreService = $eventScoreService;
+        $this->eventJuryService = $eventJuryService;
     }
 
     public function index($page = 1){
@@ -59,8 +63,9 @@ class EventController extends Controller
     }
     public function show($id){
         $event = $this->eventService->find($id);
+        $eventJuries = $this->eventJuryService->findByEventId($event->id);
         $subjects = SubjectDictionary::getList();
-        return view('event/show', compact('event', 'subjects'));
+        return view('event/show', compact('event', 'subjects', 'eventJuries'));
     }
     public function task($id)
     {

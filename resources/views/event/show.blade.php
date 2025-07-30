@@ -25,6 +25,12 @@
                                 <strong>Возрастная категория:</strong> {{ $event->class_number }} класс
                             </li>
                             <li class="list-group-item">
+                                <strong>Список жюри:</strong>
+                                @foreach($eventJuries as $eventJury)
+                                    <br>{{$eventJury->userAPI->getFullFio() }}
+                                @endforeach
+                            </li>
+                            <li class="list-group-item">
                                 <strong>Статус:</strong>
                                 @if(now() < $event->start_date)
                                     <span class="badge bg-warning text-dark">Предстоящая</span>
