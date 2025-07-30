@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Dictionaries\AttendanceDictionary;
 use App\Components\Dictionaries\SubjectDictionary;
+use App\Http\Requests\EventScoreRequest;
 use App\Http\Requests\TaskRequest;
 use App\Repositories\AttendanceRepository;
 use App\Repositories\EventRepository;
@@ -11,6 +12,7 @@ use App\Repositories\TaskAttendanceRepository;
 use App\Repositories\TaskRepository;
 use App\Services\ApplicationService;
 use App\Services\AttendanceService;
+use App\Services\EventScoreService;
 use App\Services\EventService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
@@ -25,6 +27,7 @@ class EventController extends Controller
     private TaskAttendanceRepository $taskAttendanceRepository;
     private AttendanceService $attendanceService;
     private TaskService $taskService;
+    private EventScoreService $eventScoreService;
     public function __construct(
         EventService $eventService,
         EventRepository $eventRepository,
@@ -33,7 +36,8 @@ class EventController extends Controller
         TaskRepository $taskRepository,
         TaskAttendanceRepository $taskAttendanceRepository,
         AttendanceService $attendanceService,
-        TaskService $taskService
+        TaskService $taskService,
+        EventScoreService $eventScoreService
     )
     {
         $this->eventService = $eventService;
@@ -44,6 +48,7 @@ class EventController extends Controller
         $this->taskAttendanceRepository = $taskAttendanceRepository;
         $this->attendanceService = $attendanceService;
         $this->taskService = $taskService;
+        $this->eventScoreService = $eventScoreService;
     }
 
     public function index($page = 1){
@@ -163,5 +168,17 @@ class EventController extends Controller
                 'message' => 'Ошибка сервера: ' . $e->getMessage()
             ], 500);
         }
+    }
+    public function prizeScore($id)
+    {
+        $event = $this->eventService->find($id);
+        $eventScore = $this->eventScoreService->create($id);
+        return view('event/prize-score', compact('event', 'eventScore'));
+    }
+    public function setPrizeScore(EventScoreRequest $request, $id)
+    {
+        $data = $request->validated();
+        $this->eventScoreService->fill($id, $data);
+        return redirect()->route('event.show', ['id' => $id]);
     }
 }

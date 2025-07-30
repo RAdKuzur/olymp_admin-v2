@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\EventScoreRepository;
 use App\Repositories\TaskAttendanceRepository;
 
 class ReportService
@@ -11,13 +12,14 @@ class ReportService
     private AttendanceService $attendanceService;
     private UserService $userService;
     private TaskAttendanceRepository $taskAttendanceRepository;
-
+    private EventScoreRepository $eventScoreRepository;
     public function __construct(
         ApplicationService $applicationService,
         EventService $eventService,
         AttendanceService $attendanceService,
         UserService $userService,
-        TaskAttendanceRepository $taskAttendanceRepository
+        TaskAttendanceRepository $taskAttendanceRepository,
+        EventScoreRepository $eventScoreRepository
     )
     {
         $this->applicationService = $applicationService;
@@ -25,6 +27,7 @@ class ReportService
         $this->attendanceService = $attendanceService;
         $this->userService = $userService;
         $this->taskAttendanceRepository = $taskAttendanceRepository;
+        $this->eventScoreRepository = $eventScoreRepository;
     }
     public function prepareData($id)
     {
@@ -35,6 +38,7 @@ class ReportService
             return $a->class_number <=> $b->class_number; // Сортировка по возрастанию
         });
         foreach ($events as $event){
+            $eventScore = $this->eventScoreRepository->getByEventId($event->id);
             $applications = $this->applicationService->findByEventId($event->id);
             $applications = $this->applicationService->confirmedApplications($applications);
             $attendances = $this->attendanceService->applicationFilter($applications);
@@ -53,6 +57,8 @@ class ReportService
             $data[] = [
                 'event' => $event,
                 'participants' => $participantData,
+                'prizeScore' => $eventScore ? $eventScore->prize_score : -1,
+                'winnerScore' => $eventScore ? $eventScore->winner_score : -1,
             ];
         }
         return $data;

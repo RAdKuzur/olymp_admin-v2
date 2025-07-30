@@ -188,6 +188,7 @@ class ExcelCreator
                     $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
                     $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс');
                     $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $sheet->setCellValueByColumnAndRow($column + 6, $counter + $config['formApplicationList']['startCell'][1], self::defineStatus($participant['attendance']->getTotalScore(), $event['prizeScore'], $event['winnerScore']));
                     $counter++;
                 }
             }
@@ -226,6 +227,7 @@ class ExcelCreator
                     $sheet->setCellValueByColumnAndRow($column + 2, $counter + $config['formApplicationList']['startCell'][1], $participant['person']->participantAPI->schoolAPI->name);
                     $sheet->setCellValueByColumnAndRow($column + 3, $counter + $config['formApplicationList']['startCell'][1], $event['event']->class_number . ' ' . 'класс');
                     $sheet->setCellValueByColumnAndRow($column + 4, $counter + $config['formApplicationList']['startCell'][1], $participant['attendance']->getTotalScore());
+                    $sheet->setCellValueByColumnAndRow($column + 5, $counter + $config['formApplicationList']['startCell'][1], self::defineStatus($participant['attendance']->getTotalScore(), $event['prizeScore'], $event['winnerScore']));
                     $counter++;
                 }
             }
@@ -250,13 +252,25 @@ class ExcelCreator
                     $sheet->setCellValueByColumnAndRow($column + 9, $counter + $config['formESUList']['startCell'][1], $event['event']->class_number);
                     $sheet->setCellValueByColumnAndRow($column + 10, $counter + $config['formESUList']['startCell'][1], $participant['person']->participantAPI->class);
                     $sheet->setCellValueByColumnAndRow($column + 11, $counter + $config['formESUList']['startCell'][1], $participant['attendance']->getTotalScore());
-                    $sheet->setCellValueByColumnAndRow($column + 12, $counter + $config['formESUList']['startCell'][1], 'СТАТУС');
+                    $sheet->setCellValueByColumnAndRow($column + 12, $counter + $config['formESUList']['startCell'][1], self::defineStatus($participant['attendance']->getTotalScore(), $event['prizeScore'], $event['winnerScore']));
                     $sheet->setCellValueByColumnAndRow($column + 13, $counter + $config['formESUList']['startCell'][1], 'Прошлый год');
                     $sheet->setCellValueByColumnAndRow($column + 14, $counter + $config['formESUList']['startCell'][1], 'Муниципалитет');
                     $sheet->setCellValueByColumnAndRow($column + 15, $counter + $config['formESUList']['startCell'][1], ReasonParticipantDictionary::getList()[$participant['application']->reason]);
                     $counter++;
                 }
             }
+        }
+    }
+    public static function defineStatus($point, $prizeScore, $winnerScore)
+    {
+        if ($point > $winnerScore) {
+            return 'Победитель';
+        }
+        else if ($point < $prizeScore) {
+            return 'Участник';
+        }
+        else {
+            return 'Призёр';
         }
     }
 }

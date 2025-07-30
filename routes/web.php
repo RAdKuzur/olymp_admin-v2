@@ -66,7 +66,6 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::get('/event/index/{page?}', [EventController::class, 'index'])->name('event.index');
     Route::get('/event/show/{id}', [EventController::class, 'show'])->name('event.show');
     Route::delete('/event/delete/{id}', [EventController::class, 'delete'])->name('event.delete');
-
     Route::get('/event/task/{id}', [EventController::class, 'task'])->name('event.task');
     Route::get('/event/attendance/{id}', [EventController::class, 'attendance'])->name('event.attendance');
     Route::get('/event/point/{id}', [EventController::class, 'point'])->name('event.point');
@@ -75,6 +74,8 @@ Route::group(['middleware' => 'auth.custom'], function() {
     Route::post('/event/change-attendance', [EventController::class, 'changeAttendance'])->name('event.change-attendance');
     Route::delete('/event/delete-task/{id}', [EventController::class, 'deleteTask'])->name('event.delete-task');
     Route::post('/event/change-score', [EventController::class, 'changeScore'])->name('event.change-score');
+    Route::get('/event/prize-score/{id}', [EventController::class, 'prizeScore'])->name('event.prize-score');
+    Route::post('/event/set-prize-score/{id}', [EventController::class, 'setPrizeScore'])->name('event.set-prize-score');
 
     Route::get('/report/index', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/download/{id}', [ReportController::class, 'download'])->name('report.download');
