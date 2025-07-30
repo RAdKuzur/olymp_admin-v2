@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Components\ApiHelper;
 use App\Services\ApiService;
+use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Facades\Cookie;
 
 class EventRepository
@@ -14,6 +15,7 @@ class EventRepository
     }
     public function getByApiAll($page = 1, $limit = 10)
     {
+
         $response = $this->apiService->get(
             ApiHelper::EVENT_URL_API,
             [
@@ -35,7 +37,7 @@ class EventRepository
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
         );
-        return $response['data']['data'];
+        return $response['data']['data'] ? $response['data']['data'] : [];
     }
     public function getCount()
     {
@@ -46,6 +48,6 @@ class EventRepository
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
         );
-        return $response['data']['data']['totalCount'];
+        return $response['data']['metadata']['amount'];
     }
 }

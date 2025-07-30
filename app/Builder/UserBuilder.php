@@ -4,6 +4,7 @@ namespace App\Builder;
 
 use App\Models\Participant;
 use App\Models\User;
+use DateTime;
 
 class UserBuilder
 {
@@ -18,7 +19,8 @@ class UserBuilder
         $model->phone_number = $item['phone_number'];
         $model->gender = $item['gender'];
         $model->role = $item['role'];
-        $model->birthdate = $item['birthdate'];
+        $date = new DateTime($item['birthdate']);
+        $model->birthdate = $date->format('Y-m-d');
         return $model;
     }
     public function buildParticipant(User $model, Participant $participant)

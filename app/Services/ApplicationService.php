@@ -38,7 +38,7 @@ class ApplicationService
     public function find($id)
     {
         $application = $this->applicationBuilder->build($this->applicationRepository->getByApiId($id));
-        $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+        $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->event_id));
         $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
         $this->applicationBuilder->buildUser($application, $user);
         $this->applicationBuilder->buildEvent($application, $event);
@@ -50,7 +50,7 @@ class ApplicationService
         $data = $this->applicationRepository->getByApiAll($page);
         foreach ($data as $item) {
             $application = $this->applicationBuilder->build($item);
-            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->event_id));
             $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
             $this->applicationBuilder->buildUser($application, $user);
             $this->applicationBuilder->buildEvent($application, $event);
@@ -64,7 +64,7 @@ class ApplicationService
         $data = $this->applicationRepository->getByEventId($eventId);
         foreach ($data as $item) {
             $application = $this->applicationBuilder->build($item);
-            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($application->user_id));
+            $event = $this->eventBuilder->build($this->eventRepository->getByApiId($eventId));
             $user = $this->userBuilder->build($this->userRepository->getByApiId($application->user_id));
             $this->applicationBuilder->buildUser($application, $user);
             $this->applicationBuilder->buildEvent($application, $event);

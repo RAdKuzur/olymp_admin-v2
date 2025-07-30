@@ -24,7 +24,7 @@ class ParticipantRepository
                 'Authorization' => "Bearer ". json_decode(Cookie::get('username'))->token
             ]
         );
-        return $response['data']['data'];
+        return $response['data']['data'] ? $response['data']['data'] : [];
     }
     public function getByApiId($id)
     {

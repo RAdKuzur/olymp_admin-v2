@@ -30,6 +30,7 @@ class ReportService
     {
         $data = [];
         $events = $this->eventService->filterBySubject($this->eventService->findAll(), $id);
+
         usort($events, function($a, $b) {
             return $a->class_number <=> $b->class_number; // Сортировка по возрастанию
         });
